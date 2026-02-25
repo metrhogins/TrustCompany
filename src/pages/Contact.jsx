@@ -4,6 +4,26 @@ import { useToast } from "@/components/Toast";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Mail, MapPin, Linkedin, Github, ArrowUpRight, Clock } from "lucide-react";
 
+
+// Firebase
+import { initializeApp } from "firebase/app";
+import { getFirestore, collection, addDoc } from "firebase/firestore";
+
+// Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyDYijBZM7KI2F09lDJ35hFIdlkHTi6HbMk",
+  authDomain: "company-application-33a02.firebaseapp.com",
+  projectId: "company-application-33a02",
+  storageBucket: "company-application-33a02.firebasestorage.app",
+  messagingSenderId: "453718731624",
+  appId: "1:453718731624:web:057aa525f34468b4a984dd",
+  measurementId: "G-JEF9NF5TDV",
+};
+
+// Init Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 const RECAPTCHA_SITE_KEY="6LdUIXcsAAAAABpu2T1Uv-_a2CurGrbwgZXabzus";
 const LBL=({children})=><label className="field-label">{children}</label>;
 
@@ -15,7 +35,15 @@ export default function Contact(){
   const hc=e=>setForm(p=>({...p,[e.target.name]:e.target.value}));
   const sub=async e=>{
     e.preventDefault(); if(!token) return; setLoading(true);
-    try{push("Enquiry submitted. We'll respond within one business day.");setForm({name:"",email:"",company:"",role:"",message:""});setToken(null);}
+     const submitData = {
+          name: form.name,
+          email: form.email,
+          company: form.company,
+          message: form.message,
+          submittedAt: new Date(),
+          status: "pending",
+        };
+    try{await addDoc(collection(db, "contact_form"), submitData); push("Enquiry submitted. We'll respond within one business day.");setForm({name:"",email:"",company:"",role:"",message:""});setToken(null);}
     catch{push("Submission failed. Please try again.");}
     finally{setLoading(false);}
   };
