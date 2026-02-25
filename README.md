@@ -1,39 +1,23 @@
-# TrustLedgerLabs
+# TrustLedgerLabs Pro — React + Vite + Tailwind (Dark/Light)
 
-## Setup & Run Locally
+- 🌗 Dark/Light toggle with smooth animations (default dark)
+- 📰 Blog with cover images, avatars, detail pages + links
+- 💼 Jobs page with cards, icons, Apply modal, toast success
+- 📩 Contact & Submit Blog forms → Netlify Forms + reCAPTCHA placeholders
+- 🖼 Logo + favicon, professional Unsplash images
+- ⚙️ Vite + Tailwind + React Router
 
-### Prerequisites
-- Node.js 18+
-- npm 9+
-
-### Steps
-
+## Run
 ```bash
-# 1. Install dependencies
 npm install
-
-# 2. Start the dev server
 npm run dev
 ```
 
-The app will be available at **http://localhost:5173**
+## Build & Deploy (Netlify)
+- Push to GitHub and connect in Netlify, or run `npm run build` then drag `dist/` to Netlify.
+- Forms are automatically detected by Netlify.
+- reCAPTCHA uses `<div data-netlify-recaptcha="true"></div>` — add keys in Netlify settings if needed.
 
----
-
-## Fixes Applied
-
-| # | Issue | Fix |
-|---|-------|-----|
-| 1 | `"company": "file:.."` in `package.json` | Removed — broken local path dependency not used in code |
-| 2 | `firebase: "^12.9.0"` (non-existent version) | Changed to `^10.13.0` — stable release using the same modular API |
-| 3 | No `tsconfig.json` for `.tsx` files | Added `tsconfig.json` + `tsconfig.node.json` |
-| 4 | Vite alias `'@': '/src'` (absolute path, breaks on Windows) | Updated to use `fileURLToPath` for cross-platform support |
-| 5 | Broken `node_modules` & `package-lock.json` from zip | Deleted — fresh `npm install` will regenerate correctly |
-
----
-
-## Notes
-
-- **Firebase Dashboard** (`/contact/dashboard`): Uses a hardcoded Firebase config. Ensure project `company-application-33a02` is active with Firestore read access.
-- **reCAPTCHA** on Contact & Jobs pages: Site keys are domain-restricted. Add `localhost` to allowed domains in [Google reCAPTCHA console](https://www.google.com/recaptcha/admin).
-- **`socket.io-client`**: Listed as a dependency but not used anywhere. Safe to remove.
+## Edit Content
+- Blog posts: `src/data/posts.js`
+- Theme: `tailwind.config.js` + utility classes
