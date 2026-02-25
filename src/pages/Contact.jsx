@@ -4,7 +4,7 @@ import { useToast } from "@/components/Toast";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Mail, MapPin, Linkedin, Github, ArrowUpRight, Clock } from "lucide-react";
 
-const RECAPTCHA_SITE_KEY="6LeBGXcsAAAAAGrQ6ulVSfdMIyPSX-5s7NfKZrkH";
+const RECAPTCHA_SITE_KEY="6LcZH3csAAAAAF6AuZyr80tp14pdazg_O-AsUZHH";
 const LBL=({children})=><label className="field-label">{children}</label>;
 
 export default function Contact(){
