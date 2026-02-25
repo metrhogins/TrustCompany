@@ -64,10 +64,10 @@ export default function Navbar() {
           display:flex;align-items:center;gap:.6rem;
           text-decoration:none;flex-shrink:0;
         }
-        .nb-logo img{ height:36px;width:36px;object-fit:contain; }
+        .nb-logo img{ height:48px;width:48px;object-fit:contain; }
         .nb-logo-name{
           font-family:'Cormorant Garamond',Georgia,serif;
-          font-size:1.3rem;font-weight:700;
+          font-size:1.65rem;font-weight:700;
           color:var(--tx);letter-spacing:-.01em;
           white-space:nowrap;
         }
