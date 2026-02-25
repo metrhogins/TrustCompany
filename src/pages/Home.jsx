@@ -123,7 +123,7 @@ export default function Home(){
           <style>{`.ceo-g{@media(max-width:800px){grid-template-columns:1fr!important;gap:2.5rem!important}}`}</style>
             <Reveal i={0}>
               <div style={{position:"relative"}}>
-                <div style={{borderRadius:22,overflow:"hidden",aspectRatio:"3/4",maxHeight:520,border:"1px solid var(--border)"}}>
+                <div style={{borderRadius:22,overflow:"hidden",aspectRatio:"4/4",maxHeight:520,border:"1px solid var(--border)"}}>
                   <img src="CEO.png" alt="Jerald Young, CEO of TrustLedgerLabs"
                     style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"top center",filter:"grayscale(8%)",display:"block",transition:"transform .5s,filter .4s"}}
                     onMouseEnter={e=>{e.target.style.transform="scale(1.04)";e.target.style.filter="grayscale(0%)"}}
