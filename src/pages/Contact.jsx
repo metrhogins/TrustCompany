@@ -4,7 +4,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { motion } from "framer-motion";
 import { Mail, MapPin, Linkedin, Github, ArrowUpRight } from "lucide-react";
 
-const RECAPTCHA_SITE_KEY = "6LdMrSwsAAAAAPUaa1jOTncg87eyi_ZVOOna6AbS";
+const RECAPTCHA_SITE_KEY = "6LeBGXcsAAAAAGrQ6ulVSfdMIyPSX-5s7NfKZrkH";
 
 export default function Contact() {
   const { push } = useToast();
