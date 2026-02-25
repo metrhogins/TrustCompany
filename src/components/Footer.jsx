@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 export default function Footer() {
   const colTitle = { fontSize:"0.66rem", fontWeight:700, letterSpacing:"0.2em", textTransform:"uppercase", color:"var(--tx3)", marginBottom:"1.2rem", fontFamily:"var(--font-body)" };
   const lnk = { fontSize:"0.86rem", color:"var(--tx2)", textDecoration:"none", fontWeight:300, display:"block", marginBottom:"0.6rem", fontFamily:"var(--font-body)", transition:"color .15s" };
+  
   return (
     <footer style={{ background:"var(--bg2)", borderTop:"1px solid var(--border)", fontFamily:"var(--font-body)" }}>
       <div style={{ maxWidth:1240, margin:"0 auto", padding:"5rem 2rem 2.5rem", display:"grid", gridTemplateColumns:"2fr 1fr 1fr 1.7fr", gap:"3rem" }} className="ftr-grid">
@@ -27,27 +28,27 @@ export default function Footer() {
               <a key={href} href={href} target="_blank" rel="noopener noreferrer"
                 style={{ width:36, height:36, borderRadius:9, border:"1px solid var(--border)", display:"flex", alignItems:"center", justifyContent:"center", color:"var(--tx2)", textDecoration:"none", transition:"border-color .2s, color .2s" }}
                 onMouseEnter={e=>{e.currentTarget.style.borderColor="var(--gold)";e.currentTarget.style.color="var(--gold)"}}
-                onMouseLeave={e=>{e.currentTarget.style.borderColor="var(--border)";e.currentTarget.style.color="var(--tx2)"}}>
+                onMouseLeave={e=>{e.currentTarget.style.borderColor="var(--border)";e.currentTarget.style.color="var(--tx2)"}} >
                 <I size={15}/>
               </a>
             ))}
           </div>
         </div>
 
-        {/* Company */}
+        {/* Products (Moved here from Company) */}
         <div>
-          <div style={colTitle}>Company</div>
-          {[{to:"/about",l:"About Us"},{to:"/jobs",l:"Careers"},{to:"/blog",l:"Insights"},{to:"/contact",l:"Contact"}].map(({to,l}) => (
+          <div style={colTitle}>Products</div>
+          {[{to:"/products/blockchain",l:"Blockchain"},{to:"/products/ai",l:"AI Platform"},{to:"/products/consulting",l:"Consulting"}].map(({to,l}) => (
             <Link key={to} to={to} style={lnk}
               onMouseEnter={e=>e.currentTarget.style.color="var(--gold)"}
               onMouseLeave={e=>e.currentTarget.style.color="var(--tx2)"}>{l}</Link>
           ))}
         </div>
 
-        {/* Products */}
+        {/* Company (Moved here from Products) */}
         <div>
-          <div style={colTitle}>Products</div>
-          {[{to:"/products/blockchain",l:"Blockchain"},{to:"/products/ai",l:"AI Platform"},{to:"/products/consulting",l:"Consulting"}].map(({to,l}) => (
+          <div style={colTitle}>Company</div>
+          {[{to:"/about",l:"About Us"},{to:"/blog",l:"Insights"},{to:"/contact",l:"Contact"},{to:"/jobs",l:"Open Roles"}].map(({to,l}) => (
             <Link key={to} to={to} style={lnk}
               onMouseEnter={e=>e.currentTarget.style.color="var(--gold)"}
               onMouseLeave={e=>e.currentTarget.style.color="var(--tx2)"}>{l}</Link>

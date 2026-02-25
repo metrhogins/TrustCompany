@@ -216,16 +216,16 @@ export default function Home(){
       </section>
 
       {/* CTA BANNER */}
-      <section style={{background:"var(--tx)",padding:"6rem 2rem",textAlign:"center",position:"relative",overflow:"hidden"}}>
+      <section style={{background:"var(--bg4)",padding:"6rem 2rem",textAlign:"center",position:"relative",overflow:"hidden"}}>
         <div className="tex-grid" style={{position:"absolute",inset:0,opacity:.25}}/>
         <div style={{position:"relative",zIndex:1,maxWidth:640,margin:"0 auto"}}>
           <Reveal>
             <div className="t-eyebrow" style={{color:"var(--gold2)",marginBottom:"1rem"}}>Ready to Begin?</div>
-            <h2 className="t-h2" style={{color:"var(--bg)",marginBottom:"1.25rem"}}>Let's Build Something That Endures</h2>
-            <p className="t-body-lg" style={{color:"rgba(240,236,228,.6)",marginBottom:"2.5rem"}}>
+            <h2 className="t-h2" style={{marginBottom:"1.25rem"}}>Let's Build Something That Endures</h2>
+            <p className="t-body-lg" style={{marginBottom:"2.5rem"}}>
               Whether you're architecting a blockchain protocol, deploying AI agents at enterprise scale, or navigating a complex digital transformation — we have the expertise and the track record to guide you.
             </p>
-            <Link to="/contact" className="btn btn-gold" style={{fontSize:".92rem",padding:".9rem 2.2rem"}}>
+            <Link to="/contact" className="btn btn-dark" style={{fontSize:".92rem",padding:".9rem 2.2rem"}}>
               Engage TrustLedgerLabs <ArrowUpRight size={15}/>
             </Link>
           </Reveal>

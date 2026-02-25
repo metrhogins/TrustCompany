@@ -65,7 +65,7 @@ export default function Navbar() {
 
           {/* Desktop nav */}
           <nav style={{ display:"flex", alignItems:"center", gap:2 }} className="nb-desk">
-            {[{to:"/about",l:"About"},{to:"/blog",l:"Insights"},{to:"/jobs",l:"Careers"}].map(({to,l}) => (
+            {[{to:"/about",l:"About"},{to:"/blog",l:"Insights"},{to:"/jobs",l:"Open Roles"}].map(({to,l}) => (
               <NavLink key={to} to={to}
                 style={({isActive}) => linkStyle(isActive)}
                 onMouseEnter={e => { if(e.currentTarget.style.background==="transparent"){e.currentTarget.style.color="var(--tx)";e.currentTarget.style.background="var(--bg3)";} }}
@@ -141,7 +141,7 @@ export default function Navbar() {
           </Link>
           <button onClick={() => setMob(false)} style={{ width:36, height:36, borderRadius:9, display:"flex", alignItems:"center", justifyContent:"center", background:"var(--bg3)", border:"1px solid var(--border)", color:"var(--tx2)", cursor:"pointer" }}><X size={17}/></button>
         </div>
-        {[{to:"/about",l:"About"},{to:"/blog",l:"Insights"},{to:"/jobs",l:"Careers"}].map(({to,l}) => (
+        {[{to:"/about",l:"About"},{to:"/blog",l:"Insights"},{to:"/jobs",l:"Open Roles"}].map(({to,l}) => (
           <Link key={to} to={to} onClick={() => setMob(false)} style={{ padding:"0.95rem 0", fontSize:"1.05rem", fontWeight:500, color:"var(--tx)", textDecoration:"none", borderBottom:"1px solid var(--border)" }}>{l}</Link>
         ))}
         <div style={{ padding:"0.95rem 0", borderBottom:"1px solid var(--border)" }}>
