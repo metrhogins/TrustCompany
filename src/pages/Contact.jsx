@@ -69,7 +69,7 @@ export default function Contact(){
           <motion.div initial={{opacity:0,x:-20}} animate={{opacity:1,x:0}} transition={{duration:.6}}>
             <div className="accent-bar"/>
             <div style={{display:"flex",flexDirection:"column",gap:"1.75rem",marginBottom:"3rem"}}>
-              {[{icon:MapPin,l:"Headquarters",v:"Singapore"},{icon:Mail,l:"General Enquiries",v:"hello@trustledgerlabs.com"},{icon:Clock,l:"Response Time",v:"Within one business day"}].map(({icon:Icon,l,v})=>(
+              {[{icon:MapPin,l:"Headquarters",v:"Singapore"},{icon:Mail,l:"General Enquiries",v:"support@trustledgerlabs.com"},{icon:Clock,l:"Response Time",v:"Within one business day"}].map(({icon:Icon,l,v})=>(
                 <div key={l} style={{display:"flex",alignItems:"flex-start",gap:"1rem"}}>
                   <div style={{width:42,height:42,borderRadius:11,background:"var(--gold-bg)",display:"flex",alignItems:"center",justifyContent:"center",color:"var(--gold)",flexShrink:0}}><Icon size={18}/></div>
                   <div><div className="field-label" style={{marginBottom:3}}>{l}</div><div style={{fontFamily:"var(--font-body)",fontSize:".93rem",color:"var(--tx)",fontWeight:500}}>{v}</div></div>
