@@ -1,88 +1,85 @@
 import React from "react";
-import { Linkedin, Github, Mail, ArrowUpRight } from "lucide-react";
+import { Linkedin, Github, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Footer() {
+  const colTitle = { fontSize:"0.66rem", fontWeight:700, letterSpacing:"0.2em", textTransform:"uppercase", color:"var(--tx3)", marginBottom:"1.2rem", fontFamily:"var(--font-body)" };
+  const lnk = { fontSize:"0.86rem", color:"var(--tx2)", textDecoration:"none", fontWeight:300, display:"block", marginBottom:"0.6rem", fontFamily:"var(--font-body)", transition:"color .15s" };
   return (
-    <footer style={{ background: "var(--bg2)", borderTop: "1px solid var(--border)", fontFamily: "'DM Sans','Helvetica Neue',sans-serif" }}>
-      <style>{`
-        :root{--bg:#f8f7f4;--bg2:#ffffff;--bg3:#f0ede8;--tx:#1a1714;--tx2:#5a5550;--gold:#c8a96e;--border:rgba(26,23,20,0.10)}
-        .dark{--bg:#0e0c0b;--bg2:#161311;--bg3:#1e1a17;--tx:#f0ede8;--tx2:#9e9690;--border:rgba(240,237,232,0.08)}
-        .ft-inner{max-width:1280px;margin:0 auto;padding:4rem 2rem 2rem;display:grid;grid-template-columns:2fr 1fr 1fr 1.6fr;gap:3rem}
-        @media(max-width:900px){.ft-inner{grid-template-columns:1fr 1fr;gap:2.5rem}}
-        @media(max-width:540px){.ft-inner{grid-template-columns:1fr;gap:2rem}}
-        .ft-brand-name{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.5rem;font-weight:700;color:var(--tx);margin-bottom:.5rem}
-        .ft-brand-name span{color:var(--gold)}
-        .ft-brand-desc{font-size:.88rem;color:var(--tx2);font-weight:300;line-height:1.7;margin-bottom:1.25rem;max-width:260px}
-        .ft-socials{display:flex;gap:.6rem}
-        .ft-social{width:36px;height:36px;border-radius:9px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--tx2);text-decoration:none;transition:border-color .2s,color .2s}
-        .ft-social:hover{border-color:var(--gold);color:var(--gold)}
-        .ft-col-title{font-size:.7rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--tx2);margin-bottom:1.1rem}
-        .ft-links{display:flex;flex-direction:column;gap:.6rem}
-        .ft-link{font-size:.9rem;color:var(--tx2);text-decoration:none;font-weight:300;transition:color .15s;width:fit-content}
-        .ft-link:hover{color:var(--gold)}
-        .ft-newsletter-desc{font-size:.85rem;color:var(--tx2);font-weight:300;line-height:1.65;margin-bottom:1rem}
-        .ft-nl-form{display:flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--bg3)}
-        .ft-nl-input{flex:1;padding:.65rem 1rem;background:transparent;border:none;outline:none;font-size:.88rem;color:var(--tx);font-family:inherit}
-        .ft-nl-input::placeholder{color:var(--tx2)}
-        .ft-nl-btn{padding:.65rem .9rem;background:var(--tx);color:var(--bg);border:none;cursor:pointer;transition:opacity .2s;display:flex;align-items:center}
-        .ft-nl-btn:hover{opacity:.82}
-        .ft-bottom{max-width:1280px;margin:0 auto;padding:1.5rem 2rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
-        .ft-copy{font-size:.8rem;color:var(--tx2);font-weight:300}
-        .ft-bottom-links{display:flex;gap:1.5rem}
-        .ft-bottom-link{font-size:.8rem;color:var(--tx2);text-decoration:none;font-weight:300;transition:color .15s}
-        .ft-bottom-link:hover{color:var(--gold)}
-      `}</style>
+    <footer style={{ background:"var(--bg2)", borderTop:"1px solid var(--border)", fontFamily:"var(--font-body)" }}>
+      <div style={{ maxWidth:1240, margin:"0 auto", padding:"5rem 2rem 2.5rem", display:"grid", gridTemplateColumns:"2fr 1fr 1fr 1.7fr", gap:"3rem" }} className="ftr-grid">
+        <style>{`
+          @media(max-width:900px){ .ftr-grid{grid-template-columns:1fr 1fr!important} }
+          @media(max-width:520px){ .ftr-grid{grid-template-columns:1fr!important} }
+        `}</style>
 
-      <div className="ft-inner">
         {/* Brand */}
         <div>
-          <div className="ft-brand-name">TrustLedgerLabs<span>.</span></div>
-          <p className="ft-brand-desc">Enterprise-grade AI and blockchain infrastructure — delivering trust, intelligence, and scalability worldwide.</p>
-          <p style={{ fontSize: ".78rem", color: "var(--tx2)", fontWeight: 300, marginBottom: "1rem", letterSpacing: ".04em" }}>HQ: Singapore</p>
-          <div className="ft-socials">
-            <a href="https://www.linkedin.com/company/trustledgerlabs" target="_blank" rel="noopener noreferrer" className="ft-social"><Linkedin size={16} /></a>
-            <a href="https://github.com/orgs/TrustLedgerLabs/" target="_blank" rel="noopener noreferrer" className="ft-social"><Github size={16} /></a>
+          <div style={{ fontFamily:"var(--font-display)", fontSize:"1.5rem", fontWeight:700, color:"var(--tx)", letterSpacing:"-0.02em", marginBottom:"0.75rem", lineHeight:1 }}>
+            TrustLedger<span style={{ color:"var(--gold)" }}>Labs</span>
+          </div>
+          <p style={{ fontSize:"0.86rem", color:"var(--tx2)", fontWeight:300, lineHeight:1.75, maxWidth:265, marginBottom:"0.5rem" }}>
+            Engineering the infrastructure layer where Artificial Intelligence and Blockchain converge — for enterprises that require verifiable trust at scale.
+          </p>
+          <p style={{ fontSize:"0.72rem", color:"var(--tx3)", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:"1.25rem" }}>Incorporated in Singapore</p>
+          <div style={{ display:"flex", gap:"0.5rem" }}>
+            {[{href:"https://www.linkedin.com/company/trustledgerlabs",I:Linkedin},{href:"https://github.com/orgs/TrustLedgerLabs/",I:Github}].map(({href,I}) => (
+              <a key={href} href={href} target="_blank" rel="noopener noreferrer"
+                style={{ width:36, height:36, borderRadius:9, border:"1px solid var(--border)", display:"flex", alignItems:"center", justifyContent:"center", color:"var(--tx2)", textDecoration:"none", transition:"border-color .2s, color .2s" }}
+                onMouseEnter={e=>{e.currentTarget.style.borderColor="var(--gold)";e.currentTarget.style.color="var(--gold)"}}
+                onMouseLeave={e=>{e.currentTarget.style.borderColor="var(--border)";e.currentTarget.style.color="var(--tx2)"}}>
+                <I size={15}/>
+              </a>
+            ))}
           </div>
         </div>
 
         {/* Company */}
         <div>
-          <div className="ft-col-title">Company</div>
-          <div className="ft-links">
-            <Link to="/about" className="ft-link">About</Link>
-            <Link to="/jobs" className="ft-link">Careers</Link>
-            <Link to="/blog" className="ft-link">Blog</Link>
-            <Link to="/contact" className="ft-link">Contact</Link>
-          </div>
+          <div style={colTitle}>Company</div>
+          {[{to:"/about",l:"About Us"},{to:"/jobs",l:"Careers"},{to:"/blog",l:"Insights"},{to:"/contact",l:"Contact"}].map(({to,l}) => (
+            <Link key={to} to={to} style={lnk}
+              onMouseEnter={e=>e.currentTarget.style.color="var(--gold)"}
+              onMouseLeave={e=>e.currentTarget.style.color="var(--tx2)"}>{l}</Link>
+          ))}
         </div>
 
         {/* Products */}
         <div>
-          <div className="ft-col-title">Products</div>
-          <div className="ft-links">
-            <Link to="/products/blockchain" className="ft-link">Blockchain</Link>
-            <Link to="/products/ai" className="ft-link">AI Platform</Link>
-            <Link to="/products/consulting" className="ft-link">Consulting</Link>
-          </div>
+          <div style={colTitle}>Products</div>
+          {[{to:"/products/blockchain",l:"Blockchain"},{to:"/products/ai",l:"AI Platform"},{to:"/products/consulting",l:"Consulting"}].map(({to,l}) => (
+            <Link key={to} to={to} style={lnk}
+              onMouseEnter={e=>e.currentTarget.style.color="var(--gold)"}
+              onMouseLeave={e=>e.currentTarget.style.color="var(--tx2)"}>{l}</Link>
+          ))}
         </div>
 
         {/* Newsletter */}
         <div>
-          <div className="ft-col-title">Stay Updated</div>
-          <p className="ft-newsletter-desc">Subscribe for insights on AI, blockchain, and decentralized intelligence.</p>
-          <div className="ft-nl-form">
-            <input type="email" placeholder="your@email.com" className="ft-nl-input" />
-            <button type="button" className="ft-nl-btn"><Mail size={15} /></button>
+          <div style={colTitle}>Intelligence Briefing</div>
+          <p style={{ fontSize:"0.84rem", color:"var(--tx2)", fontWeight:300, lineHeight:1.7, marginBottom:"1rem" }}>
+            Monthly research dispatches on AI infrastructure, blockchain protocol design, and decentralised enterprise systems.
+          </p>
+          <div style={{ display:"flex", border:"1px solid var(--border)", borderRadius:10, overflow:"hidden", background:"var(--bg3)" }}>
+            <input type="email" placeholder="your@email.com" className="inp" style={{ border:"none", borderRadius:0, background:"transparent", padding:"0.65rem 1rem", fontSize:"0.85rem" }}/>
+            <button type="button"
+              style={{ padding:"0 0.9rem", background:"var(--tx)", color:"var(--bg)", border:"none", cursor:"pointer", display:"flex", alignItems:"center", transition:"opacity .18s" }}
+              onMouseEnter={e=>e.currentTarget.style.opacity=".8"}
+              onMouseLeave={e=>e.currentTarget.style.opacity="1"}>
+              <Mail size={14}/>
+            </button>
           </div>
         </div>
       </div>
 
-      <div className="ft-bottom">
-        <span className="ft-copy">© {new Date().getFullYear()} TrustLedgerLabs. All rights reserved.</span>
-        <div className="ft-bottom-links">
-          <a href="#" className="ft-bottom-link">Privacy Policy</a>
-          <a href="#" className="ft-bottom-link">Terms of Service</a>
+      <div style={{ maxWidth:1240, margin:"0 auto", padding:"1.5rem 2rem", borderTop:"1px solid var(--border)", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:"1rem" }}>
+        <span style={{ fontSize:"0.76rem", color:"var(--tx3)", fontWeight:300 }}>© {new Date().getFullYear()} TrustLedgerLabs Pte. Ltd. All rights reserved.</span>
+        <div style={{ display:"flex", gap:"1.5rem" }}>
+          {["Privacy Policy","Terms of Service","Cookie Policy"].map(l => (
+            <a key={l} href="#" style={{ fontSize:"0.76rem", color:"var(--tx3)", textDecoration:"none", fontWeight:300, transition:"color .15s" }}
+              onMouseEnter={e=>e.currentTarget.style.color="var(--gold)"}
+              onMouseLeave={e=>e.currentTarget.style.color="var(--tx3)"}>{l}</a>
+          ))}
         </div>
       </div>
     </footer>

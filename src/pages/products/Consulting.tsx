@@ -1,118 +1,79 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Users, Lightbulb, Workflow, ArrowUpRight, Target, BarChart3, BookOpen } from "lucide-react";
+import { Users, Lightbulb, Workflow, Target, BarChart3, BookOpen, ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  visible: (i = 0) => ({ opacity: 1, y: 0, transition: { duration: .55, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] } }),
-};
-
-const features = [
-  { icon: Users, title: "Enterprise Advisory", desc: "From ideation to deployment, we guide enterprises through every stage of their AI and blockchain transformation journey.", color: "#c8a96e" },
-  { icon: Lightbulb, title: "Innovation Strategy", desc: "Co-create next-generation products and services powered by decentralized intelligence and AI-driven automation.", color: "#6366f1" },
-  { icon: Workflow, title: "Integration Support", desc: "Seamlessly integrate AI and blockchain stacks into your existing systems with minimal disruption and maximum impact.", color: "#00d4aa" },
-  { icon: Target, title: "Digital Roadmapping", desc: "Define a clear, prioritized path to digital transformation aligned with your business goals and market position.", color: "#c8a96e" },
-  { icon: BarChart3, title: "Performance Optimization", desc: "Audit and optimize existing blockchain and AI deployments for cost-efficiency, speed, and reliability.", color: "#6366f1" },
-  { icon: BookOpen, title: "Team Training", desc: "Upskill your engineering and leadership teams on emerging Web3, AI, and decentralized system architectures.", color: "#00d4aa" },
+const fv={hidden:{opacity:0,y:22},visible:(i=0)=>({opacity:1,y:0,transition:{duration:.52,delay:i*.09,ease:[.22,1,.36,1]}})};
+const services=[
+  {icon:Users,c:"#b5894a",t:"Executive Advisory & Board Engagement",d:"Senior-level advisory to C-suite and Board stakeholders navigating AI adoption, blockchain strategy, and digital transformation. We translate deep technical expertise into clear strategic direction and defensible investment cases."},
+  {icon:Lightbulb,c:"#6366f1",t:"Innovation Strategy & Technology Roadmapping",d:"Co-design of multi-year digital transformation roadmaps, identifying the highest-leverage intersection of your business model with emerging AI and blockchain capabilities — prioritised by commercial impact and technical feasibility."},
+  {icon:Workflow,c:"#b5894a",t:"Systems Integration & Migration Planning",d:"Architecture-level planning for integrating AI inference pipelines and blockchain components into legacy enterprise stacks — including co-existence strategies, phased cut-over plans, and zero-downtime migration approaches."},
+  {icon:Target,c:"#6366f1",t:"Use Case Discovery & Feasibility Assessment",d:"Structured discovery engagements to identify, evaluate, and prioritise AI and blockchain use cases — with commercial modelling, technical feasibility scoring, regulatory risk assessment, and a ranked opportunity matrix."},
+  {icon:BarChart3,c:"#b5894a",t:"Performance Audit & Optimisation",d:"Independent technical audit of existing blockchain deployments and AI systems — assessing security posture, gas efficiency, model performance, data pipeline integrity, and alignment with current regulatory expectations."},
+  {icon:BookOpen,c:"#6366f1",t:"Enterprise Training & Capability Building",d:"Structured programmes for engineering leads, product managers, and executive teams covering blockchain architecture, AI governance, responsible deployment practices, and the commercial frameworks governing emerging technology."},
 ];
-
-const process = [
-  { step: "01", title: "Discovery", desc: "Deep-dive into your business objectives, existing systems, and market landscape." },
-  { step: "02", title: "Strategy", desc: "Define a bespoke roadmap with clear milestones, technology choices, and success metrics." },
-  { step: "03", title: "Build", desc: "Execute with our expert engineering teams or alongside your internal developers." },
-  { step: "04", title: "Scale", desc: "Optimize, monitor, and evolve your systems as your business grows." },
+const process=[
+  {n:"01",t:"Discovery",d:"A structured 2–4 week discovery engagement to map your organisation's objectives, current technology landscape, regulatory context, and strategic priorities. Output: a current-state assessment and ranked opportunity matrix."},
+  {n:"02",t:"Strategy",d:"Bespoke transformation roadmap with phased milestones, technology selections, build-vs-buy recommendations, risk register, and commercial modelling. Peer-reviewed by our technical leadership before delivery."},
+  {n:"03",t:"Execution",d:"Hands-on delivery alongside your internal teams — with weekly steering, continuous risk management, and adaptive planning that responds to changing business conditions without losing strategic coherence."},
+  {n:"04",t:"Optimisation",d:"Post-deployment review cycles measuring outcomes against objectives, identifying refinement opportunities, and establishing the governance cadence required to sustain performance as your systems mature and scale."},
 ];
-
-export default function Consulting() {
-  return (
-    <div style={{ fontFamily: "'DM Sans','Helvetica Neue',sans-serif", background: "var(--bg)", color: "var(--tx)" }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:wght@400;600;700&display=swap');
-        :root{--bg:#f8f7f4;--bg2:#ffffff;--bg3:#f0ede8;--tx:#1a1714;--tx2:#5a5550;--gold:#c8a96e;--border:rgba(26,23,20,0.10)}
-        .dark{--bg:#0e0c0b;--bg2:#161311;--bg3:#1e1a17;--tx:#f0ede8;--tx2:#9e9690;--border:rgba(240,237,232,0.08)}
-        .prod-hero{position:relative;overflow:hidden;padding:7rem 2rem 5rem;text-align:center;background:var(--bg2)}
-        .prod-inner{max-width:760px;margin:0 auto;position:relative;z-index:1}
-        .prod-eye{display:inline-flex;align-items:center;gap:8px;font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(200,169,110,.3);padding:6px 16px;border-radius:100px;margin-bottom:1.5rem}
-        .prod-h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:700;color:var(--tx);line-height:1.1;margin-bottom:1.25rem}
-        .prod-h1 em{font-style:italic;color:var(--gold)}
-        .prod-sub{font-size:1.05rem;color:var(--tx2);font-weight:300;line-height:1.8;margin-bottom:2.5rem}
-        .prod-cta{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:var(--tx);color:var(--bg);border-radius:12px;font-size:.9rem;font-weight:600;text-decoration:none;transition:opacity .2s,transform .2s}
-        .prod-cta:hover{opacity:.82;transform:translateY(-2px)}
-        .feat-section{max-width:1200px;margin:0 auto;padding:5rem 2rem}
-        .feat-lbl{font-size:.72rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem}
-        .feat-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(2rem,3vw,2.8rem);font-weight:700;color:var(--tx);margin-bottom:3rem}
-        .feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
-        .feat-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:2rem;transition:border-color .2s,transform .25s}
-        .feat-card:hover{border-color:var(--gold);transform:translateY(-4px)}
-        .feat-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem}
-        .feat-ttl{font-size:1.05rem;font-weight:600;color:var(--tx);margin-bottom:.6rem}
-        .feat-desc{font-size:.9rem;color:var(--tx2);line-height:1.75;font-weight:300}
-        .divider{height:1px;background:var(--border);max-width:1200px;margin:0 auto}
-        .process-section{background:var(--bg3);padding:5rem 2rem}
-        .process-inner{max-width:1200px;margin:0 auto}
-        .process-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:2.5rem}
-        .process-card{background:var(--bg2);padding:2rem;transition:background .2s}
-        .process-card:hover{background:var(--bg)}
-        .process-step{font-family:'Cormorant Garamond',Georgia,serif;font-size:3rem;font-weight:700;color:rgba(200,169,110,.25);line-height:1;margin-bottom:.75rem}
-        .process-ttl{font-size:1rem;font-weight:600;color:var(--tx);margin-bottom:.5rem}
-        .process-desc{font-size:.88rem;color:var(--tx2);line-height:1.7;font-weight:300}
-        .cta-section{background:var(--bg);border-top:1px solid var(--border);padding:5rem 2rem;text-align:center}
-        .cta-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(2rem,3.5vw,3rem);font-weight:700;color:var(--tx);margin-bottom:1rem}
-        .cta-sub{font-size:1rem;color:var(--tx2);font-weight:300;max-width:500px;margin:0 auto 2.5rem}
-      `}</style>
-
-      <section className="prod-hero">
-        <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(200,169,110,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(200,169,110,.04) 1px, transparent 1px)", backgroundSize: "50px 50px", pointerEvents: "none" }} />
-        <div className="prod-inner">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .7 }}>
-            <div className="prod-eye"><Lightbulb size={12} /> Consulting Services</div>
-            <h1 className="prod-h1">Strategic Guidance for <em>Digital Transformation</em></h1>
-            <p className="prod-sub">Expert consulting for blockchain and AI adoption, tailored to your industry's challenges and calibrated to deliver measurable outcomes.</p>
-            <Link to="/contact" className="prod-cta">Book a Session <ArrowUpRight size={16} /></Link>
-          </motion.div>
-        </div>
-      </section>
-      <div className="divider" />
-
-      <section className="feat-section">
-        <p className="feat-lbl">What We Offer</p>
-        <h2 className="feat-title">Consulting Services</h2>
-        <div className="feat-grid">
-          {features.map((f, i) => (
-            <motion.div key={f.title} className="feat-card" variants={fadeUp} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}>
-              <div className="feat-icon" style={{ background: f.color + "18" }}><f.icon size={22} style={{ color: f.color }} /></div>
-              <div className="feat-ttl">{f.title}</div>
-              <div className="feat-desc">{f.desc}</div>
+export default function Consulting(){return(
+  <div style={{background:"var(--bg)",color:"var(--tx)"}}>
+    <section style={{background:"var(--bg2)",borderBottom:"1px solid var(--border)",padding:"7rem 2rem 5rem",position:"relative",overflow:"hidden",textAlign:"center"}}>
+      <div className="tex-grid" style={{position:"absolute",inset:0,pointerEvents:"none"}}/>
+      <div style={{maxWidth:780,margin:"0 auto",position:"relative",zIndex:1}}>
+        <motion.div initial={{opacity:0,y:22}} animate={{opacity:1,y:0}} transition={{duration:.7}}>
+          <div className="badge" style={{marginBottom:"1.75rem"}}><Lightbulb size={11}/>Consulting Services</div>
+          <h1 className="t-h1" style={{marginBottom:"1.25rem"}}>Strategic Advisory for <em style={{fontStyle:"italic",color:"var(--gold)"}}>Digital Transformation</em></h1>
+          <p className="t-body-lg" style={{maxWidth:620,margin:"0 auto 2.5rem"}}>TrustLedgerLabs Consulting partners with enterprise leadership to navigate the complexity of AI and blockchain adoption — translating technological possibility into commercially rigorous transformation programmes with measurable outcomes.</p>
+          <Link to="/contact" className="btn btn-dark">Book a Discovery Session <ArrowUpRight size={14}/></Link>
+        </motion.div>
+      </div>
+    </section>
+    <section style={{background:"var(--bg)"}}>
+      <div className="wrap sect">
+        <motion.div initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}} style={{marginBottom:"3.5rem"}}>
+          <div className="t-eyebrow" style={{marginBottom:".75rem"}}>Advisory Services</div>
+          <h2 className="t-h2">How We Engage</h2>
+        </motion.div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(320px,1fr))",gap:"1.5rem"}}>
+          {services.map((f,i)=>(
+            <motion.div key={f.t} className="card-hover" variants={fv} custom={i} initial="hidden" whileInView="visible" viewport={{once:true,margin:"-40px"}} style={{padding:"2rem"}}>
+              <div style={{width:48,height:48,borderRadius:12,background:f.c+"18",display:"flex",alignItems:"center",justifyContent:"center",marginBottom:"1.25rem"}}><f.icon size={22} style={{color:f.c}}/></div>
+              <div style={{fontFamily:"var(--font-body)",fontSize:"1rem",fontWeight:600,color:"var(--tx)",marginBottom:".6rem"}}>{f.t}</div>
+              <div className="t-small">{f.d}</div>
             </motion.div>
           ))}
         </div>
-      </section>
-      <div className="divider" />
-
-      <section className="process-section">
-        <div className="process-inner">
-          <p className="feat-lbl">How It Works</p>
-          <h2 className="feat-title" style={{ marginBottom: 0 }}>Our Engagement Process</h2>
-          <div className="process-grid">
-            {process.map((p, i) => (
-              <motion.div key={p.step} className="process-card" variants={fadeUp} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-                <div className="process-step">{p.step}</div>
-                <div className="process-ttl">{p.title}</div>
-                <div className="process-desc">{p.desc}</div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="cta-section">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .6 }}>
-          <h2 className="cta-title">Ready to Transform Your Business?</h2>
-          <p className="cta-sub">Let's schedule a discovery call and explore how TrustLedgerLabs can accelerate your vision.</p>
-          <Link to="/contact" className="prod-cta">Book a Consulting Session <ArrowUpRight size={16} /></Link>
+      </div>
+    </section>
+    <section style={{background:"var(--bg3)",borderTop:"1px solid var(--border)",borderBottom:"1px solid var(--border)"}}>
+      <div className="wrap sect">
+        <motion.div initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}} style={{marginBottom:"3.5rem"}}>
+          <div className="t-eyebrow" style={{marginBottom:".75rem"}}>Engagement Model</div>
+          <h2 className="t-h2">How a Consulting Engagement Works</h2>
         </motion.div>
-      </section>
-    </div>
-  );
-}
+        <div className="grid-divider" style={{gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))"}}>
+          {process.map((p,i)=>(
+            <motion.div key={p.n} variants={fv} custom={i} initial="hidden" whileInView="visible" viewport={{once:true}}
+              style={{background:"var(--bg2)",padding:"2.5rem",transition:"background .2s",cursor:"default"}}
+              onMouseEnter={e=>e.currentTarget.style.background="var(--bg3)"}
+              onMouseLeave={e=>e.currentTarget.style.background="var(--bg2)"}>
+              <div style={{fontFamily:"var(--font-display)",fontSize:"3rem",fontWeight:700,color:"rgba(181,137,74,.18)",lineHeight:1,marginBottom:".75rem"}}>{p.n}</div>
+              <div style={{fontFamily:"var(--font-body)",fontSize:"1rem",fontWeight:600,color:"var(--tx)",marginBottom:".6rem"}}>{p.t}</div>
+              <div className="t-small">{p.d}</div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+    <section style={{background:"var(--bg)",padding:"5.5rem 2rem",textAlign:"center"}}>
+      <motion.div initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:.6}}>
+        <div className="t-eyebrow" style={{marginBottom:"1rem"}}>Begin the Engagement</div>
+        <h2 className="t-h2" style={{marginBottom:"1.25rem"}}>Ready to Transform Your Enterprise?</h2>
+        <p className="t-body-lg" style={{maxWidth:500,margin:"0 auto 2.5rem"}}>Schedule a complimentary 45-minute discovery call with our advisory team. No commitment — just a substantive conversation about what's genuinely possible for your organisation.</p>
+        <Link to="/contact" className="btn btn-dark" style={{padding:".85rem 2.2rem"}}>Schedule Your Discovery Call <ArrowUpRight size={14}/></Link>
+      </motion.div>
+    </section>
+  </div>
+);}

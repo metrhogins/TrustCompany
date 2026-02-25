@@ -21,7 +21,7 @@ export function ToastProvider({ children }) {
               initial={{ opacity: 0, x: 20, scale: .95 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: 20, scale: .95 }}
-              className="card px-4 py-3 border border-slate-200 dark:border-slate-800">
+              style={{background:"var(--bg2)",border:"1px solid var(--border)",borderRadius:14,padding:"12px 16px",boxShadow:"var(--shadow2)"}}>
               <div className="text-sm">{t.msg}</div>
             </motion.div>
           ))}

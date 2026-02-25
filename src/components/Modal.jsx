@@ -15,7 +15,7 @@ export default function Modal({ open, onClose, children, title }) {
             className="card w-full max-w-xl mx-auto p-6 mt-24 relative">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-lg font-semibold">{title}</h3>
-              <button onClick={onClose} className="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">✕</button>
+              <button onClick={onClose} style={{color:"var(--tx2)",background:"none",border:"none",cursor:"pointer",fontSize:"1.1rem",lineHeight:1}}>✕</button>
             </div>
             {children}
           </motion.div>

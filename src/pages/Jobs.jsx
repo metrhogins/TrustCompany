@@ -205,7 +205,7 @@ export default function Jobs() {
             )}
             <div className="mt-5 flex justify-end gap-3">
               <button onClick={() => setOpen(false)} type="button" className="btn btn-ghost">Cancel</button>
-              <button type="submit" className="btn bg-slate-700 hover:bg-slate-600 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white shadow-sm transition">Submit</button>
+              <button type="submit" className="btn btn-dark">Submit</button>
             </div>
           </form>
         </div>

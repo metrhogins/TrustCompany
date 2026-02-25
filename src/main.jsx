@@ -26,7 +26,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <ThemeProvider>
       <ToastProvider>
         <BrowserRouter>
-          <div className="min-h-screen flex flex-col bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100">
+          <div className="app-shell">
             <Navbar />
             <main className="flex-1">
               <Routes>
