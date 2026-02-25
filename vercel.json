@@ -1,0 +1,55 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "dist/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/users/(.*)",
+      "dest": "app/index.js"
+    },
+    {
+      "src": "/about",
+      "dest": "dist/index.html"
+    },
+    {
+      "src": "/jobs",
+      "dest": "dist/index.html"
+    },
+    {
+      "src": "/blog",
+      "dest": "dist/index.html"
+    },
+    {
+      "src": "/products/blockchain",
+      "dest": "dist/index.html"
+    },
+    {
+      "src": "/products/ai",
+      "dest": "dist/index.html"
+    },
+    {
+      "src": "/products/consulting",
+      "dest": "dist/index.html"
+    },
+    {
+      "src": "/apply",
+      "dest": "dist/index.html"
+    },
+    {
+      "src": "/contact",
+      "dest": "dist/index.html"
+    },
+    {
+      "src": "/contact/dashboard",
+      "dest": "dist/index.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "dist/$1"
+    }
+  ]
+}
