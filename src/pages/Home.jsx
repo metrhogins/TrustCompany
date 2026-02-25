@@ -49,7 +49,7 @@ export default function Home(){
               <span style={{width:6,height:6,borderRadius:"50%",background:"var(--gold)",flexShrink:0}}/>
               Est. 2024 &nbsp;·&nbsp; Singapore &nbsp;·&nbsp; AI &amp; Blockchain Infrastructure
             </div>
-            <h1 className="t-display" style={{color:"#f0ece4",maxWidth:800,marginBottom:"1.5rem"}}>
+            <h1 className="t-display" style={{color:"#f0ece4",marginBottom:"1.5rem"}}>
               Building the Future<br/>of <em className="t-italic">Trusted</em> Intelligence
             </h1>
             <p className="t-body-lg" style={{color:"rgba(240,236,228,.6)",maxWidth:580,marginBottom:"2.75rem"}}>
