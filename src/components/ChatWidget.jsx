@@ -9,6 +9,23 @@ const SUGGESTED = [
   "How do I schedule a discovery call?",
 ];
 
+const SYSTEM_PROMPT = `You are Ledger, the AI assistant for TrustLedgerLabs — a Singapore-headquartered technology company that builds enterprise-grade AI and blockchain infrastructure.
+
+Your role is to help website visitors understand TrustLedgerLabs' services, guide them to the right product or team, and encourage them to schedule a discovery call or get in contact.
+
+About TrustLedgerLabs:
+- Founded 2024, Singapore HQ, offices in London and Dubai
+- 70+ specialists: engineers, ML researchers, cryptographers, domain strategists
+
+Products:
+1. Blockchain Solutions - smart contracts, DeFi, RWA tokenisation, ZK proofs, cross-chain interoperability
+2. AI Platform - autonomous AI agents, LLM/RAG pipelines, ML deployment, federated learning
+3. Consulting - strategy, compliance (EU AI Act, MAS, DORA, MiCA), digital transformation
+
+Stats: 500+ enterprise clients, 20+ deployments in 8 countries, 99.99% SLA
+
+Rules: Be concise and institutional. End every reply with a next step (/schedule or /contact). Max 3-5 sentences. Never invent names or case studies. Stay on TrustLedgerLabs topics only.`;
+
 function TypingDots() {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 4, padding: "10px 14px" }}>
@@ -31,11 +48,7 @@ function Message({ msg }) {
       initial={{ opacity: 0, y: 10, scale: 0.97 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-      style={{
-        display: "flex",
-        justifyContent: isUser ? "flex-end" : "flex-start",
-        marginBottom: "0.65rem",
-      }}
+      style={{ display: "flex", justifyContent: isUser ? "flex-end" : "flex-start", marginBottom: "0.65rem" }}
     >
       {!isUser && (
         <div style={{
@@ -48,19 +61,13 @@ function Message({ msg }) {
         </div>
       )}
       <div style={{
-        maxWidth: "80%",
-        padding: "10px 13px",
+        maxWidth: "80%", padding: "10px 13px",
         borderRadius: isUser ? "14px 14px 4px 14px" : "14px 14px 14px 4px",
-        background: isUser
-          ? "var(--gold)"
-          : "var(--bg3)",
+        background: isUser ? "var(--gold)" : "var(--bg3)",
         border: isUser ? "none" : "1px solid var(--border)",
         color: isUser ? "#fff" : "var(--tx)",
-        fontFamily: "var(--font-body)",
-        fontSize: "0.83rem",
-        lineHeight: 1.55,
-        whiteSpace: "pre-wrap",
-        wordBreak: "break-word",
+        fontFamily: "var(--font-body)", fontSize: "0.83rem",
+        lineHeight: 1.55, whiteSpace: "pre-wrap", wordBreak: "break-word",
       }}>
         {msg.content}
       </div>
@@ -79,7 +86,6 @@ export default function ChatWidget() {
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Initial greeting when first opened
   useEffect(() => {
     if (open && !greeted) {
       setGreeted(true);
@@ -108,16 +114,36 @@ export default function ChatWidget() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/chat", {
+      const apiKey = import.meta.env.VITE_GROQ_API_KEY;
+
+      if (!apiKey) {
+        throw new Error("API key not configured");
+      }
+
+      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiKey}`,
+        },
         body: JSON.stringify({
-          messages: newMessages.map((m) => ({ role: m.role, content: m.content })),
+          model: "llama-3.1-8b-instant",
+          max_tokens: 400,
+          messages: [
+            { role: "system", content: SYSTEM_PROMPT },
+            ...newMessages.slice(-10).map((m) => ({ role: m.role, content: m.content })),
+          ],
         }),
       });
+
       const data = await res.json();
-      if (data.error) throw new Error(data.error);
-      setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
+
+      if (!res.ok) {
+        throw new Error(data?.error?.message || "Groq API error");
+      }
+
+      const reply = data.choices?.[0]?.message?.content ?? "";
+      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
     } catch (err) {
       setError("Something went wrong. Please try again.");
       setMessages((prev) => prev.slice(0, -1));
@@ -145,7 +171,6 @@ export default function ChatWidget() {
 
   return (
     <>
-      {/* ── FLOATING BUTTON ── */}
       <AnimatePresence>
         {!open && (
           <motion.button
@@ -158,12 +183,11 @@ export default function ChatWidget() {
             style={{
               position: "fixed", bottom: 28, right: 28, zIndex: 9999,
               width: 56, height: 56, borderRadius: 16,
-              background: "var(--gold)",
-              border: "none", cursor: "pointer",
+              background: "var(--gold)", border: "none", cursor: "pointer",
               display: "flex", alignItems: "center", justifyContent: "center",
               boxShadow: "0 8px 32px rgba(181,137,74,0.45), 0 2px 8px rgba(0,0,0,0.12)",
             }}
-            whileHover={{ scale: 1.08, boxShadow: "0 12px 40px rgba(181,137,74,0.55)" }}
+            whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.95 }}
           >
             <Sparkles size={22} color="#fff" />
@@ -186,7 +210,6 @@ export default function ChatWidget() {
         )}
       </AnimatePresence>
 
-      {/* ── CHAT PANEL ── */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -199,76 +222,46 @@ export default function ChatWidget() {
               position: "fixed", bottom: 28, right: 28, zIndex: 9999,
               width: "min(400px, calc(100vw - 40px))",
               height: "min(580px, calc(100vh - 100px))",
-              borderRadius: 20,
-              background: "var(--bg2)",
+              borderRadius: 20, background: "var(--bg2)",
               border: "1px solid var(--border)",
-              boxShadow: "0 24px 80px rgba(0,0,0,0.18), 0 4px 20px rgba(0,0,0,0.08)",
-              display: "flex", flexDirection: "column",
-              overflow: "hidden",
+              boxShadow: "0 24px 80px rgba(0,0,0,0.18)",
+              display: "flex", flexDirection: "column", overflow: "hidden",
             }}
           >
-
             {/* Header */}
             <div style={{
-              padding: "14px 16px",
-              background: "var(--bg)",
+              padding: "14px 16px", background: "var(--bg)",
               borderBottom: "1px solid var(--border)",
-              display: "flex", alignItems: "center", gap: 10,
-              flexShrink: 0,
+              display: "flex", alignItems: "center", gap: 10, flexShrink: 0,
             }}>
               <div style={{
-                width: 36, height: 36, borderRadius: 10,
-                background: "var(--gold)",
+                width: 36, height: 36, borderRadius: 10, background: "var(--gold)",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                flexShrink: 0,
-                boxShadow: "0 2px 8px rgba(181,137,74,0.4)",
+                flexShrink: 0, boxShadow: "0 2px 8px rgba(181,137,74,0.4)",
               }}>
                 <Sparkles size={16} color="#fff" />
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{
-                  fontFamily: "var(--font-body)", fontSize: "0.88rem",
-                  fontWeight: 700, color: "var(--tx)", lineHeight: 1.2,
-                }}>
+                <div style={{ fontFamily: "var(--font-body)", fontSize: "0.88rem", fontWeight: 700, color: "var(--tx)", lineHeight: 1.2 }}>
                   Ledger
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                  <span style={{
-                    width: 6, height: 6, borderRadius: "50%",
-                    background: "#22c55e", display: "block",
-                    boxShadow: "0 0 6px #22c55e",
-                  }} />
-                  <span style={{
-                    fontFamily: "var(--font-body)", fontSize: "0.7rem",
-                    color: "var(--tx3)",
-                  }}>
+                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#22c55e", display: "block", boxShadow: "0 0 6px #22c55e" }} />
+                  <span style={{ fontFamily: "var(--font-body)", fontSize: "0.7rem", color: "var(--tx3)" }}>
                     TrustLedgerLabs AI · Online
                   </span>
                 </div>
               </div>
               <div style={{ display: "flex", gap: 4 }}>
-                <button
-                  onClick={reset}
-                  title="Reset conversation"
-                  style={{
-                    width: 30, height: 30, borderRadius: 8, border: "1px solid var(--border)",
-                    background: "transparent", cursor: "pointer",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    color: "var(--tx3)", transition: "all .15s",
-                  }}
+                <button onClick={reset} title="Reset conversation"
+                  style={{ width: 30, height: 30, borderRadius: 8, border: "1px solid var(--border)", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--tx3)", transition: "all .15s" }}
                   onMouseEnter={e => { e.currentTarget.style.background = "var(--bg3)"; e.currentTarget.style.color = "var(--tx)"; }}
                   onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--tx3)"; }}
                 >
                   <RotateCcw size={13} />
                 </button>
-                <button
-                  onClick={() => setOpen(false)}
-                  style={{
-                    width: 30, height: 30, borderRadius: 8, border: "1px solid var(--border)",
-                    background: "transparent", cursor: "pointer",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    color: "var(--tx3)", transition: "all .15s",
-                  }}
+                <button onClick={() => setOpen(false)}
+                  style={{ width: 30, height: 30, borderRadius: 8, border: "1px solid var(--border)", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--tx3)", transition: "all .15s" }}
                   onMouseEnter={e => { e.currentTarget.style.background = "var(--bg3)"; e.currentTarget.style.color = "var(--tx)"; }}
                   onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--tx3)"; }}
                 >
@@ -278,45 +271,20 @@ export default function ChatWidget() {
             </div>
 
             {/* Messages */}
-            <div style={{
-              flex: 1, overflowY: "auto", padding: "16px 14px 8px",
-              scrollbarWidth: "thin",
-              scrollbarColor: "var(--border) transparent",
-            }}>
-              {messages.map((msg, i) => (
-                <Message key={i} msg={msg} />
-              ))}
+            <div style={{ flex: 1, overflowY: "auto", padding: "16px 14px 8px", scrollbarWidth: "thin", scrollbarColor: "var(--border) transparent" }}>
+              {messages.map((msg, i) => <Message key={i} msg={msg} />)}
               {loading && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: "0.65rem" }}
-                >
-                  <div style={{
-                    width: 28, height: 28, borderRadius: 8, flexShrink: 0,
-                    background: "var(--gold-bg)", border: "1px solid var(--gold-bd)",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                  }}>
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: "0.65rem" }}>
+                  <div style={{ width: 28, height: 28, borderRadius: 8, flexShrink: 0, background: "var(--gold-bg)", border: "1px solid var(--gold-bd)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <Sparkles size={13} style={{ color: "var(--gold)" }} />
                   </div>
-                  <div style={{
-                    background: "var(--bg3)", border: "1px solid var(--border)",
-                    borderRadius: "14px 14px 14px 4px",
-                  }}>
+                  <div style={{ background: "var(--bg3)", border: "1px solid var(--border)", borderRadius: "14px 14px 14px 4px" }}>
                     <TypingDots />
                   </div>
                 </motion.div>
               )}
               {error && (
-                <motion.div
-                  initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                  style={{
-                    padding: "8px 12px", background: "rgba(239,68,68,0.08)",
-                    border: "1px solid rgba(239,68,68,0.2)", borderRadius: 10,
-                    fontFamily: "var(--font-body)", fontSize: "0.78rem",
-                    color: "#ef4444", marginBottom: "0.65rem",
-                  }}
-                >
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ padding: "8px 12px", background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 10, fontFamily: "var(--font-body)", fontSize: "0.78rem", color: "#ef4444", marginBottom: "0.65rem" }}>
                   {error}
                 </motion.div>
               )}
@@ -326,42 +294,14 @@ export default function ChatWidget() {
             {/* Suggested prompts */}
             <AnimatePresence>
               {showSuggestions && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  style={{ padding: "0 12px 10px", flexShrink: 0 }}
-                >
-                  <div style={{
-                    fontFamily: "var(--font-body)", fontSize: "0.67rem",
-                    fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase",
-                    color: "var(--tx3)", marginBottom: 6,
-                  }}>
-                    Suggested
-                  </div>
+                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} style={{ padding: "0 12px 10px", flexShrink: 0 }}>
+                  <div style={{ fontFamily: "var(--font-body)", fontSize: "0.67rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--tx3)", marginBottom: 6 }}>Suggested</div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
                     {SUGGESTED.map((s) => (
-                      <button
-                        key={s}
-                        onClick={() => send(s)}
-                        style={{
-                          textAlign: "left", padding: "7px 11px",
-                          background: "var(--bg3)", border: "1px solid var(--border)",
-                          borderRadius: 9, cursor: "pointer",
-                          fontFamily: "var(--font-body)", fontSize: "0.78rem",
-                          color: "var(--tx2)", transition: "all .15s",
-                          whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
-                        }}
-                        onMouseEnter={e => {
-                          e.currentTarget.style.borderColor = "var(--gold)";
-                          e.currentTarget.style.color = "var(--gold)";
-                          e.currentTarget.style.background = "var(--gold-bg)";
-                        }}
-                        onMouseLeave={e => {
-                          e.currentTarget.style.borderColor = "var(--border)";
-                          e.currentTarget.style.color = "var(--tx2)";
-                          e.currentTarget.style.background = "var(--bg3)";
-                        }}
+                      <button key={s} onClick={() => send(s)}
+                        style={{ textAlign: "left", padding: "7px 11px", background: "var(--bg3)", border: "1px solid var(--border)", borderRadius: 9, cursor: "pointer", fontFamily: "var(--font-body)", fontSize: "0.78rem", color: "var(--tx2)", transition: "all .15s", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+                        onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--gold)"; e.currentTarget.style.color = "var(--gold)"; e.currentTarget.style.background = "var(--gold-bg)"; }}
+                        onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--tx2)"; e.currentTarget.style.background = "var(--bg3)"; }}
                       >
                         {s}
                       </button>
@@ -372,18 +312,8 @@ export default function ChatWidget() {
             </AnimatePresence>
 
             {/* Input */}
-            <div style={{
-              padding: "10px 12px 14px",
-              borderTop: "1px solid var(--border)",
-              flexShrink: 0,
-              background: "var(--bg)",
-            }}>
-              <div style={{
-                display: "flex", alignItems: "flex-end", gap: 8,
-                background: "var(--bg2)", border: "1px solid var(--border)",
-                borderRadius: 12, padding: "8px 8px 8px 12px",
-                transition: "border-color .15s",
-              }}
+            <div style={{ padding: "10px 12px 14px", borderTop: "1px solid var(--border)", flexShrink: 0, background: "var(--bg)" }}>
+              <div style={{ display: "flex", alignItems: "flex-end", gap: 8, background: "var(--bg2)", border: "1px solid var(--border)", borderRadius: 12, padding: "8px 8px 8px 12px", transition: "border-color .15s" }}
                 onFocusCapture={e => e.currentTarget.style.borderColor = "var(--gold)"}
                 onBlurCapture={e => e.currentTarget.style.borderColor = "var(--border)"}
               >
@@ -394,42 +324,22 @@ export default function ChatWidget() {
                   onKeyDown={handleKey}
                   placeholder="Ask about our services…"
                   rows={1}
-                  style={{
-                    flex: 1, background: "transparent", border: "none",
-                    outline: "none", resize: "none",
-                    fontFamily: "var(--font-body)", fontSize: "0.84rem",
-                    color: "var(--tx)", lineHeight: 1.5,
-                    maxHeight: 100, overflowY: "auto",
-                    scrollbarWidth: "none",
-                  }}
-                  onInput={e => {
-                    e.target.style.height = "auto";
-                    e.target.style.height = Math.min(e.target.scrollHeight, 100) + "px";
-                  }}
+                  style={{ flex: 1, background: "transparent", border: "none", outline: "none", resize: "none", fontFamily: "var(--font-body)", fontSize: "0.84rem", color: "var(--tx)", lineHeight: 1.5, maxHeight: 100, overflowY: "auto", scrollbarWidth: "none" }}
+                  onInput={e => { e.target.style.height = "auto"; e.target.style.height = Math.min(e.target.scrollHeight, 100) + "px"; }}
                 />
                 <motion.button
                   onClick={() => send()}
                   disabled={!input.trim() || loading}
                   whileTap={{ scale: 0.9 }}
-                  style={{
-                    width: 34, height: 34, borderRadius: 9, border: "none",
-                    background: input.trim() && !loading ? "var(--gold)" : "var(--bg3)",
-                    cursor: input.trim() && !loading ? "pointer" : "not-allowed",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    flexShrink: 0, transition: "background .15s",
-                  }}
+                  style={{ width: 34, height: 34, borderRadius: 9, border: "none", background: input.trim() && !loading ? "var(--gold)" : "var(--bg3)", cursor: input.trim() && !loading ? "pointer" : "not-allowed", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background .15s" }}
                 >
                   <Send size={14} color={input.trim() && !loading ? "#fff" : "var(--tx3)"} />
                 </motion.button>
               </div>
-              <div style={{
-                fontFamily: "var(--font-body)", fontSize: "0.65rem",
-                color: "var(--tx3)", textAlign: "center", marginTop: 7,
-              }}>
-                Powered by Claude · TrustLedgerLabs AI
+              <div style={{ fontFamily: "var(--font-body)", fontSize: "0.65rem", color: "var(--tx3)", textAlign: "center", marginTop: 7 }}>
+                Powered by Groq · TrustLedgerLabs AI
               </div>
             </div>
-
           </motion.div>
         )}
       </AnimatePresence>
