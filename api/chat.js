@@ -1,4 +1,14 @@
 export default async function handler(req, res) {
+  // CORS headers — needed for browser fetch calls
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  // Handle preflight
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
   // Only allow POST
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -6,10 +16,20 @@ export default async function handler(req, res) {
 
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
-    return res.status(500).json({ error: "API key not configured" });
+    return res.status(500).json({ error: "GROQ_API_KEY is not set in environment variables" });
   }
 
-  const { messages } = req.body;
+  // Parse body — Vercel usually auto-parses JSON, but fallback just in case
+  let body = req.body;
+  if (!body || typeof body === "string") {
+    try {
+      body = JSON.parse(req.body);
+    } catch {
+      return res.status(400).json({ error: "Invalid JSON body" });
+    }
+  }
+
+  const { messages } = body;
   if (!messages || !Array.isArray(messages)) {
     return res.status(400).json({ error: "messages array required" });
   }
@@ -80,7 +100,7 @@ Your role is to help website visitors understand TrustLedgerLabs' services, guid
         max_tokens: 400,
         messages: [
           { role: "system", content: SYSTEM_PROMPT },
-          ...messages.slice(-10), // keep last 10 messages for context
+          ...messages.slice(-10),
         ],
       }),
     });
