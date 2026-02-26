@@ -118,3 +118,10 @@ Your role is to help website visitors understand TrustLedgerLabs' services, guid
     return res.status(500).json({ error: err.message });
   }
 }
+
+
+export const config = {
+  api: {
+    bodyParser: true,
+  },
+};
