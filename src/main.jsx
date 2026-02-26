@@ -16,6 +16,7 @@ import Contact from '@/pages/Contact'
 import SubmitBlog from '@/pages/SubmitBlog'
 import Dashboard from '@/pages/Dashboard'
 import Schedule from '@/pages/Schedule'
+import ChatWidget from '@/components/ChatWidget'
 
 import Consulting from '@/pages/products/Consulting'
 import Blockchain from '@/pages/products/Blockchain'
@@ -47,6 +48,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               </Routes>
             </main>
             <Footer />
+            <ChatWidget />
           </div>
         </BrowserRouter>
       </ToastProvider>
