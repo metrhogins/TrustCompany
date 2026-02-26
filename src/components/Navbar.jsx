@@ -111,6 +111,11 @@ export default function Navbar() {
             <button onClick={toggle} style={{ width:36, height:36, borderRadius:9, display:"flex", alignItems:"center", justifyContent:"center", background:"var(--bg3)", border:"1px solid var(--border)", color:"var(--tx2)", cursor:"pointer" }}>
               {theme === "dark" ? <Sun size={15}/> : <Moon size={15}/>}
             </button>
+            <Link to="/schedule" className="nb-desk" style={{ display:"inline-flex", alignItems:"center", gap:6, padding:"0.52rem 1.3rem", background:"var(--gold)", color:"#fff", borderRadius:10, fontFamily:"var(--font-body)", fontSize:"0.84rem", fontWeight:600, textDecoration:"none", transition:"opacity .18s, transform .18s", whiteSpace:"nowrap" }}
+              onMouseEnter={e => { e.currentTarget.style.opacity=".88"; e.currentTarget.style.transform="translateY(-1px)"; }}
+              onMouseLeave={e => { e.currentTarget.style.opacity="1"; e.currentTarget.style.transform="translateY(0)"; }}>
+              Schedule a Call <ArrowUpRight size={13}/>
+            </Link>
             <Link to="/contact" className="nb-desk" style={{ display:"inline-flex", alignItems:"center", gap:6, padding:"0.52rem 1.3rem", background:"var(--tx)", color:"var(--bg)", borderRadius:10, fontFamily:"var(--font-body)", fontSize:"0.84rem", fontWeight:600, textDecoration:"none", transition:"opacity .18s, transform .18s", whiteSpace:"nowrap" }}
               onMouseEnter={e => { e.currentTarget.style.opacity=".82"; e.currentTarget.style.transform="translateY(-1px)"; }}
               onMouseLeave={e => { e.currentTarget.style.opacity="1"; e.currentTarget.style.transform="translateY(0)"; }}>
@@ -152,7 +157,10 @@ export default function Navbar() {
             </Link>
           ))}
         </div>
-        <Link to="/contact" onClick={() => setMob(false)} style={{ marginTop:"1.5rem", display:"flex", alignItems:"center", justifyContent:"center", gap:7, padding:"1rem", background:"var(--tx)", color:"var(--bg)", borderRadius:12, fontWeight:600, fontSize:"0.95rem", textDecoration:"none" }}>
+        <Link to="/schedule" onClick={() => setMob(false)} style={{ marginTop:"1.5rem", display:"flex", alignItems:"center", justifyContent:"center", gap:7, padding:"1rem", background:"var(--gold)", color:"#fff", borderRadius:12, fontWeight:600, fontSize:"0.95rem", textDecoration:"none" }}>
+          Schedule a Call <ArrowUpRight size={14}/>
+        </Link>
+        <Link to="/contact" onClick={() => setMob(false)} style={{ marginTop:"0.75rem", display:"flex", alignItems:"center", justifyContent:"center", gap:7, padding:"1rem", background:"var(--tx)", color:"var(--bg)", borderRadius:12, fontWeight:600, fontSize:"0.95rem", textDecoration:"none" }}>
           Contact Us <ArrowUpRight size={14}/>
         </Link>
       </div>

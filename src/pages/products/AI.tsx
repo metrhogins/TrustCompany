@@ -67,7 +67,7 @@ export default function AI(){return(
         <div className="t-eyebrow" style={{marginBottom:"1rem"}}>Deploy With Confidence</div>
         <h2 className="t-h2" style={{marginBottom:"1.25rem"}}>Ready to Deploy AI at Enterprise Scale?</h2>
         <p className="t-body-lg" style={{maxWidth:480,margin:"0 auto 2.5rem"}}>Let's define your AI roadmap — from architecture design and model selection to MLOps infrastructure and governance framework.</p>
-        <Link to="/contact" className="btn btn-dark" style={{padding:".85rem 2.2rem"}}>Schedule a Technical Discovery <ArrowUpRight size={14}/></Link>
+        <Link to="/schedule" className="btn btn-dark" style={{padding:".85rem 2.2rem"}}>Schedule a Technical Discovery <ArrowUpRight size={14}/></Link>
       </motion.div>
     </section>
   </div>

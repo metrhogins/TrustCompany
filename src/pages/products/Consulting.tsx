@@ -26,7 +26,7 @@ export default function Consulting(){return(
           <div className="badge" style={{marginBottom:"1.75rem"}}><Lightbulb size={11}/>Consulting Services</div>
           <h1 className="t-h1" style={{marginBottom:"1.25rem"}}>Strategic Advisory for <em style={{fontStyle:"italic",color:"var(--gold)"}}>Digital Transformation</em></h1>
           <p className="t-body-lg" style={{maxWidth:620,margin:"0 auto 2.5rem"}}>TrustLedgerLabs Consulting partners with enterprise leadership to navigate the complexity of AI and blockchain adoption — translating technological possibility into commercially rigorous transformation programmes with measurable outcomes.</p>
-          <Link to="/contact" className="btn btn-dark">Book a Discovery Session <ArrowUpRight size={14}/></Link>
+          <Link to="/schedule" className="btn btn-dark">Book a Discovery Session <ArrowUpRight size={14}/></Link>
         </motion.div>
       </div>
     </section>
@@ -72,7 +72,7 @@ export default function Consulting(){return(
         <div className="t-eyebrow" style={{marginBottom:"1rem"}}>Begin the Engagement</div>
         <h2 className="t-h2" style={{marginBottom:"1.25rem"}}>Ready to Transform Your Enterprise?</h2>
         <p className="t-body-lg" style={{maxWidth:500,margin:"0 auto 2.5rem"}}>Schedule a complimentary 45-minute discovery call with our advisory team. No commitment — just a substantive conversation about what's genuinely possible for your organisation.</p>
-        <Link to="/contact" className="btn btn-dark" style={{padding:".85rem 2.2rem"}}>Schedule Your Discovery Call <ArrowUpRight size={14}/></Link>
+        <Link to="/schedule" className="btn btn-dark" style={{padding:".85rem 2.2rem"}}>Schedule Your Discovery Call <ArrowUpRight size={14}/></Link>
       </motion.div>
     </section>
   </div>

@@ -67,7 +67,7 @@ export default function Blockchain(){return(
         <div className="t-eyebrow" style={{marginBottom:"1rem"}}>Start the Conversation</div>
         <h2 className="t-h2" style={{marginBottom:"1.25rem"}}>Ready to Build on Blockchain?</h2>
         <p className="t-body-lg" style={{maxWidth:480,margin:"0 auto 2.5rem"}}>Let's scope your use case and design an architecture calibrated for your regulatory environment, performance requirements, and long-term roadmap.</p>
-        <Link to="/contact" className="btn btn-dark" style={{padding:".85rem 2.2rem"}}>Schedule a Discovery Call <ArrowUpRight size={14}/></Link>
+        <Link to="/schedule" className="btn btn-dark" style={{padding:".85rem 2.2rem"}}>Schedule a Discovery Call <ArrowUpRight size={14}/></Link>
       </motion.div>
     </section>
   </div>
