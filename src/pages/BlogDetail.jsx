@@ -2,7 +2,7 @@ import React from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { posts } from "@/data/posts";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ArrowLeft, ExternalLink, BookOpen } from "lucide-react";
 
 export default function BlogDetail(){
   const {slug}=useParams();
@@ -25,8 +25,10 @@ export default function BlogDetail(){
           {(post.tags||[]).map(t=><span key={t} className="tag-gold" style={{fontSize:".62rem",letterSpacing:".1em",textTransform:"uppercase",fontWeight:700}}>{t}</span>)}
         </div>
         <motion.h1 className="t-h2" style={{marginBottom:"1.5rem"}} initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{duration:.6}}>{post.title}</motion.h1>
-        <div style={{display:"flex",alignItems:"center",gap:10,paddingBottom:"2rem",borderBottom:"1px solid var(--border)",marginBottom:"2.5rem"}}>
-          <img src={post.avatar} style={{width:38,height:38,borderRadius:"50%",objectFit:"cover"}} alt={post.author}/>
+        <div style={{display:"flex",alignItems:"center",gap:12,paddingBottom:"2rem",borderBottom:"1px solid var(--border)",marginBottom:"2.5rem"}}>
+          <div style={{width:42,height:42,borderRadius:10,background:"var(--gold-bg)",border:"1px solid var(--gold-bd)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+            <BookOpen size={18} style={{color:"var(--gold)"}}/>
+          </div>
           <div>
             <div style={{fontFamily:"var(--font-body)",fontSize:".88rem",fontWeight:600,color:"var(--tx)"}}>{post.author}</div>
             <div className="t-small">{new Date(post.date).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}</div>
@@ -56,7 +58,7 @@ export default function BlogDetail(){
                   <img src={p.thumb||p.cover} style={{height:160,width:"100%",objectFit:"cover",display:"block"}} alt={p.title}/>
                   <div style={{padding:"1.25rem"}}>
                     <div style={{fontFamily:"var(--font-display)",fontSize:"1.1rem",fontWeight:700,color:"var(--tx)",lineHeight:1.25,marginBottom:".4rem"}}>{p.title}</div>
-                    <div className="t-small">{p.author} · {new Date(p.date).toLocaleDateString("en-US",{month:"short",year:"numeric"})}</div>
+                    <div className="t-small" style={{display:"flex",alignItems:"center",gap:5}}><BookOpen size={11} style={{color:"var(--gold)"}}/>{p.author} · {new Date(p.date).toLocaleDateString("en-US",{month:"short",year:"numeric"})}</div>
                   </div>
                 </Link>
               ))}
