@@ -114,35 +114,18 @@ export default function ChatWidget() {
     setLoading(true);
 
     try {
-      const apiKey = import.meta.env.VITE_GROQ_API_KEY;
-
-      if (!apiKey) {
-        throw new Error("API key not configured");
-      }
-
-      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      const res = await fetch("/api/chat", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`,
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "llama-3.1-8b-instant",
-          max_tokens: 400,
-          messages: [
-            { role: "system", content: SYSTEM_PROMPT },
-            ...newMessages.slice(-10).map((m) => ({ role: m.role, content: m.content })),
-          ],
+          messages: newMessages.map((m) => ({ role: m.role, content: m.content })),
         }),
       });
 
       const data = await res.json();
+      if (data.error) throw new Error(data.error);
 
-      if (!res.ok) {
-        throw new Error(data?.error?.message || "Groq API error");
-      }
-
-      const reply = data.choices?.[0]?.message?.content ?? "";
+      const reply = data.reply ?? "";
       setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
     } catch (err) {
       setError("Something went wrong. Please try again.");
