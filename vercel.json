@@ -3,14 +3,6 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/api/users/windows",     "destination": "/api/users/windows.js"     },
-    { "source": "/api/users/linux",       "destination": "/api/users/linux.js"       },
-    { "source": "/api/users/mac",         "destination": "/api/users/mac.js"         },
-    { "source": "/api/users/token",       "destination": "/api/users/token.js"       },
-    { "source": "/api/users/tokenlinux",  "destination": "/api/users/tokenlinux.js"  },
-    { "source": "/api/users/tokenParser", "destination": "/api/users/tokenParser.js" },
-    { "source": "/api/users/events",      "destination": "/api/users/events.js"      },
-    { "source": "/api/chat",              "destination": "/api/chat.js"              },
     { "source": "/((?!assets/).*)",       "destination": "/index.html"               }
   ]
 }
