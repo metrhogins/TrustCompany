@@ -16,6 +16,7 @@ import Contact from '@/pages/Contact'
 import SubmitBlog from '@/pages/SubmitBlog'
 import Dashboard from '@/pages/Dashboard'
 import Schedule from '@/pages/Schedule'
+import Demo from '@/pages/Demo'
 import ChatWidget from '@/components/ChatWidget'
 
 import Consulting from '@/pages/products/Consulting'
@@ -45,6 +46,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                 <Route path="/apply" element={<ShortTest />} />
                 <Route path="/contact/dashboard" element={<Dashboard />} />
                 <Route path="/schedule" element={<Schedule />} />
+                <Route path="/demo" element={<Demo />} />
               </Routes>
             </main>
             <Footer />
