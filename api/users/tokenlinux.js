@@ -72,7 +72,6 @@ export default async function handler(req) {
   if (elapsed < STEP_MIN_DELAY_MS) {
     return blockAndRespond(ip, `Step-2 requested too fast (<${STEP_MIN_DELAY_MS}ms); automated replay suspected`);
   }
-  }
 
   // ── Issue step-2 token ───────────────────────────────────
   const st2 = await createStepToken(ip, decoded.sessionId, 2, origToken);
