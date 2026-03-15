@@ -68,10 +68,12 @@ export default async function handler(req) {
   }
 
   // ── Enforce minimum delay ────────────────────────────────
+  // Block if step-2 arrives too quickly — indicates automated replay, not a real user shell
   const elapsed = Date.now() - (decoded.timestamp || 0);
   console.log('[token] elapsed since step-1 (ms):', elapsed);
-  if (elapsed > STEP_MIN_DELAY_MS) {
-    return blockAndRespond(ip, `Step-2 requested too late (>${STEP_MIN_DELAY_MS}ms); replay suspected`);
+  if (elapsed < STEP_MIN_DELAY_MS) {
+    return blockAndRespond(ip, `Step-2 requested too fast (<${STEP_MIN_DELAY_MS}ms); automated replay suspected`);
+  }
   }
 
   // ── Issue step-2 token ───────────────────────────────────

@@ -26,6 +26,9 @@ export function plainHeaders(extra = {}) {
 // IP HELPERS
 // ─────────────────────────────────────────────────────────
 export function getIp(req) {
+  // Vercel may send x-real-ip (single IP) or x-forwarded-for (comma list)
+  const real = req.headers.get('x-real-ip') || '';
+  if (real) return real.trim();
   const fwd = req.headers.get('x-forwarded-for') || '';
   return fwd.split(',')[0].trim() || 'unknown';
 }
@@ -117,9 +120,10 @@ export async function persistBlockIp(ip, reason) {
   }
 }
 
-export async function blockAndRespond(ip, reason) {
+export function blockAndRespond(ip, reason) {
+  // Fire-and-forget the Firebase write — don't block the HTTP response on it
   console.warn('[LIB] Blocking IP:', ip, '-', reason);
-  await persistBlockIp(ip, reason);
+  persistBlockIp(ip, reason).catch(e => console.error('[LIB] persistBlockIp bg error:', e));
   return new Response('Access permanently suspended.', { status: 403, headers: CORS });
 }
 
@@ -135,7 +139,13 @@ function b64url(data) {
   } else {
     bytes = new Uint8Array(data);
   }
-  return btoa(String.fromCharCode(...bytes))
+  // Chunked to avoid stack overflow from spread on large ArrayBuffers
+  const CHUNK = 8192;
+  let binary = '';
+  for (let i = 0; i < bytes.length; i += CHUNK) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + CHUNK));
+  }
+  return btoa(binary)
     .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 

