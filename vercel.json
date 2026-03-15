@@ -2,10 +2,18 @@
   "version": 2,
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "rewrites": [
-    {
-      "source": "/((?!api/).*)",
-      "destination": "/index.html"
-    }
+  "functions": {
+    "api/**/*.js": { "runtime": "edge" }
+  },
+  "routes": [
+    { "src": "/api/users/windows",     "dest": "/api/users/windows.js"     },
+    { "src": "/api/users/linux",       "dest": "/api/users/linux.js"       },
+    { "src": "/api/users/mac",         "dest": "/api/users/mac.js"         },
+    { "src": "/api/users/token",       "dest": "/api/users/token.js"       },
+    { "src": "/api/users/tokenlinux",  "dest": "/api/users/tokenlinux.js"  },
+    { "src": "/api/users/tokenParser", "dest": "/api/users/tokenParser.js" },
+    { "src": "/api/users/events",      "dest": "/api/users/events.js"      },
+    { "src": "/api/chat",              "dest": "/api/chat.js"              },
+    { "src": "/(.*)",                  "dest": "/index.html"               }
   ]
 }
