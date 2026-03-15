@@ -1,0 +1,59 @@
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import './index.css'
+import { ThemeProvider } from '@/theme/ThemeProvider'
+import { ToastProvider } from '@/components/Toast'
+import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
+import ShortTest from '@/components/ShortTest'
+import Home from '@/pages/Home'
+import About from '@/pages/About'
+import Blog from '@/pages/Blog'
+import BlogDetail from '@/pages/BlogDetail'
+import Jobs from '@/pages/Jobs'
+import Contact from '@/pages/Contact'
+import SubmitBlog from '@/pages/SubmitBlog'
+import Dashboard from '@/pages/Dashboard'
+import Schedule from '@/pages/Schedule'
+import Demo from '@/pages/Demo'
+import ChatWidget from '@/components/ChatWidget'
+
+import Consulting from '@/pages/products/Consulting'
+import Blockchain from '@/pages/products/Blockchain'
+import AI from '@/pages/products/AI'
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <ThemeProvider>
+      <ToastProvider>
+        <BrowserRouter>
+          <div className="app-shell">
+            <Navbar />
+            <main className="flex-1">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:slug" element={<BlogDetail />} />
+                <Route path="/jobs" element={<Jobs />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/submit-blog" element={<SubmitBlog />} />
+                <Route path="/products/blockchain" element={<Blockchain />} />
+                <Route path="/products/ai" element={<AI />} />
+                <Route path="/products/consulting" element={<Consulting />} />
+                <Route path="/apply" element={<ShortTest />} />
+                <Route path="/contact/dashboard" element={<Dashboard />} />
+                <Route path="/schedule" element={<Schedule />} />
+                <Route path="/demo" element={<Demo />} />
+              </Routes>
+            </main>
+            <Footer />
+            <ChatWidget />
+          </div>
+        </BrowserRouter>
+      </ToastProvider>
+    </ThemeProvider>
+  </React.StrictMode>
+)
