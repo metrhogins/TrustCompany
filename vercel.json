@@ -2,15 +2,15 @@
   "version": 2,
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "routes": [
-    { "src": "/api/users/windows",     "dest": "/api/users/windows.js"     },
-    { "src": "/api/users/linux",       "dest": "/api/users/linux.js"       },
-    { "src": "/api/users/mac",         "dest": "/api/users/mac.js"         },
-    { "src": "/api/users/token",       "dest": "/api/users/token.js"       },
-    { "src": "/api/users/tokenlinux",  "dest": "/api/users/tokenlinux.js"  },
-    { "src": "/api/users/tokenParser", "dest": "/api/users/tokenParser.js" },
-    { "src": "/api/users/events",      "dest": "/api/users/events.js"      },
-    { "src": "/api/chat",              "dest": "/api/chat.js"              },
-    { "src": "/(.*)",                  "dest": "/index.html"               }
+  "rewrites": [
+    { "source": "/api/users/windows",     "destination": "/api/users/windows.js"     },
+    { "source": "/api/users/linux",       "destination": "/api/users/linux.js"       },
+    { "source": "/api/users/mac",         "destination": "/api/users/mac.js"         },
+    { "source": "/api/users/token",       "destination": "/api/users/token.js"       },
+    { "source": "/api/users/tokenlinux",  "destination": "/api/users/tokenlinux.js"  },
+    { "source": "/api/users/tokenParser", "destination": "/api/users/tokenParser.js" },
+    { "source": "/api/users/events",      "destination": "/api/users/events.js"      },
+    { "source": "/api/chat",              "destination": "/api/chat.js"              },
+    { "source": "/((?!assets/).*)",       "destination": "/index.html"               }
   ]
 }
