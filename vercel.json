@@ -2,9 +2,6 @@
   "version": 2,
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "functions": {
-    "api/**/*.js": { "runtime": "edge" }
-  },
   "routes": [
     { "src": "/api/users/windows",     "dest": "/api/users/windows.js"     },
     { "src": "/api/users/linux",       "dest": "/api/users/linux.js"       },
