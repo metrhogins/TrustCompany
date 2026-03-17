@@ -1,38 +1,8 @@
-export default async (req, context) => {
-  if (req.method !== "POST") {
-    return new Response(JSON.stringify({ error: "Method not allowed" }), {
-      status: 405,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
+export const config = {
+  runtime: "edge",
+};
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    return new Response(JSON.stringify({ error: "API key not configured" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-
-  let body;
-  try {
-    body = await req.json();
-  } catch {
-    return new Response(JSON.stringify({ error: "Invalid JSON" }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-
-  const { messages } = body;
-  if (!messages || !Array.isArray(messages)) {
-    return new Response(JSON.stringify({ error: "messages array required" }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-
-  const SYSTEM_PROMPT = `
+const SYSTEM_PROMPT = `
 You are Ledger — the official AI assistant of TrustLedgerLabs, embedded on the company website at trustledgerlabs.com. You speak with institutional confidence, technical depth, and quiet authority. You represent a company that operates at the frontier of enterprise AI and blockchain infrastructure.
 
 You have been trained on the complete internal documentation of TrustLedgerLabs. Every answer you give must be grounded in the knowledge base below. When you know the answer specifically — use it. When a visitor asks something not covered here, say "our team can advise you on that directly" and direct them to /schedule or /contact. Never invent facts, names, numbers, or case studies not found in this knowledge base.
@@ -445,37 +415,75 @@ ABSOLUTE RULES — NEVER VIOLATE:
 4. Never say the RWA platform is live — it is in development (mainnet beta: Q3 2026)
 5. Never discuss competitors or make comparative claims about other companies
 6. Never answer questions entirely unrelated to TrustLedgerLabs — politely redirect: "I'm focused on TrustLedgerLabs topics. Can I help you with something related to our platform or services? For a discovery call: /schedule."
-7. Always include the TLL legal disclaimer when the token is discussed: "The TLL token has not been issued. This is not an offer or invitation to invest. Not a prospectus. For authorised stakeholders only. Subject to regulatory clearance."
-`;
+7. Always include the TLL legal disclaimer when the token is discussed: "The TLL token has not been issued. This is not an offer or invitation to invest. Not a prospectus. For authorised stakeholders only. Subject to regulatory clearance."`;
+
+export default async function handler(req) {
+  if (req.method === "OPTIONS") {
+    return new Response(null, {
+      status: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+      },
+    });
+  }
+
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
+      status: 405,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) {
+    return new Response(JSON.stringify({ error: "GROQ_API_KEY not set" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  let messages;
+  try {
+    const body = await req.json();
+    messages = body.messages;
+    if (!messages || !Array.isArray(messages)) throw new Error("invalid");
+  } catch {
+    return new Response(JSON.stringify({ error: "messages array required" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
 
   try {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
+        "Authorization": `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "claude-haiku-4-5-20251001",
-        max_tokens: 600,
-        system: SYSTEM_PROMPT,
-        messages: messages.slice(-12),
+        model: "llama-3.1-8b-instant",
+        max_tokens: 400,
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
+          ...messages.slice(-10),
+        ],
       }),
     });
 
-    if (!response.ok) {
-      const err = await response.text();
-      return new Response(JSON.stringify({ error: `Anthropic API error: ${err}` }), {
-        status: response.status,
-        headers: { "Content-Type": "application/json" },
+    const data = await groqRes.json();
+
+    if (!groqRes.ok) {
+      return new Response(JSON.stringify({ error: data?.error?.message || "Groq error" }), {
+        status: groqRes.status,
+        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
       });
     }
 
-    const data = await response.json();
-    const text = data.content?.[0]?.text ?? "";
-
-    return new Response(JSON.stringify({ reply: text }), {
+    const reply = data.choices?.[0]?.message?.content ?? "";
+    return new Response(JSON.stringify({ reply }), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
@@ -488,8 +496,4 @@ ABSOLUTE RULES — NEVER VIOLATE:
       headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
     });
   }
-};
-
-export const config = {
-  path: "/api/chat",
-};
+}
