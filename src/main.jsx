@@ -18,10 +18,12 @@ import Dashboard from '@/pages/Dashboard'
 import Schedule from '@/pages/Schedule'
 import Demo from '@/pages/Demo'
 import ChatWidget from '@/components/ChatWidget'
+import AuditLog from '@/pages/AuditLog'
 
 import Consulting from '@/pages/products/Consulting'
 import Blockchain from '@/pages/products/Blockchain'
 import AI from '@/pages/products/AI'
+import Attestation from '@/pages/Attestation'
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -47,6 +49,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                 <Route path="/contact/dashboard" element={<Dashboard />} />
                 <Route path="/schedule" element={<Schedule />} />
                 <Route path="/demo" element={<Demo />} />
+                <Route path="/attestation" element={<Attestation />} />
+                <Route path="/audit-log" element={<AuditLog />} />
               </Routes>
             </main>
             <Footer />

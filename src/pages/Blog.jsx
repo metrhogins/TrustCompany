@@ -16,7 +16,7 @@ function readTime(post) {
 }
 
 // Tag accent colours cycle
-const tagColors = ["#b5894a", "#6366f1", "#0ea5e9", "#10b981"];
+const tagColors = ["#089981", "#0e7da8", "#0ab89d", "#0ea5e9"];
 
 export default function Blog() {
   const [featured, ...rest] = posts;
@@ -70,7 +70,7 @@ export default function Blog() {
                 />
                 <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(13,11,9,.55) 0%, transparent 60%)" }} />
                 <div style={{ position: "absolute", top: 20, left: 20 }}>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 12px", background: "rgba(181,137,74,.9)", borderRadius: 6, fontFamily: "var(--font-body)", fontSize: ".7rem", fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase", color: "#fff" }}>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 12px", background: "rgba(8,153,129,.9)", borderRadius: 6, fontFamily: "var(--font-body)", fontSize: ".7rem", fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase", color: "#fff" }}>
                     ✦ Featured
                   </span>
                 </div>

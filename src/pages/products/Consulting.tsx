@@ -4,12 +4,12 @@ import { Users, Lightbulb, Workflow, Target, BarChart3, BookOpen, ArrowUpRight }
 import { Link } from "react-router-dom";
 const fv={hidden:{opacity:0,y:22},visible:(i=0)=>({opacity:1,y:0,transition:{duration:.52,delay:i*.09,ease:[.22,1,.36,1]}})};
 const services=[
-  {icon:Users,c:"#b5894a",t:"Executive Advisory & Board Engagement",d:"Senior-level advisory to C-suite and Board stakeholders navigating AI adoption, blockchain strategy, and digital transformation. We translate deep technical expertise into clear strategic direction and defensible investment cases."},
-  {icon:Lightbulb,c:"#6366f1",t:"Innovation Strategy & Technology Roadmapping",d:"Co-design of multi-year digital transformation roadmaps, identifying the highest-leverage intersection of your business model with emerging AI and blockchain capabilities — prioritised by commercial impact and technical feasibility."},
-  {icon:Workflow,c:"#b5894a",t:"Systems Integration & Migration Planning",d:"Architecture-level planning for integrating AI inference pipelines and blockchain components into legacy enterprise stacks — including co-existence strategies, phased cut-over plans, and zero-downtime migration approaches."},
-  {icon:Target,c:"#6366f1",t:"Use Case Discovery & Feasibility Assessment",d:"Structured discovery engagements to identify, evaluate, and prioritise AI and blockchain use cases — with commercial modelling, technical feasibility scoring, regulatory risk assessment, and a ranked opportunity matrix."},
-  {icon:BarChart3,c:"#b5894a",t:"Performance Audit & Optimisation",d:"Independent technical audit of existing blockchain deployments and AI systems — assessing security posture, gas efficiency, model performance, data pipeline integrity, and alignment with current regulatory expectations."},
-  {icon:BookOpen,c:"#6366f1",t:"Enterprise Training & Capability Building",d:"Structured programmes for engineering leads, product managers, and executive teams covering blockchain architecture, AI governance, responsible deployment practices, and the commercial frameworks governing emerging technology."},
+  {icon:Users,c:"var(--gold)",t:"Executive Advisory & Board Engagement",d:"Senior-level advisory to C-suite and Board stakeholders navigating AI adoption, blockchain strategy, and digital transformation. We translate deep technical expertise into clear strategic direction and defensible investment cases."},
+  {icon:Lightbulb,c:"var(--amber)",t:"Innovation Strategy & Technology Roadmapping",d:"Co-design of multi-year digital transformation roadmaps, identifying the highest-leverage intersection of your business model with emerging AI and blockchain capabilities — prioritised by commercial impact and technical feasibility."},
+  {icon:Workflow,c:"var(--gold)",t:"Systems Integration & Migration Planning",d:"Architecture-level planning for integrating AI inference pipelines and blockchain components into legacy enterprise stacks — including co-existence strategies, phased cut-over plans, and zero-downtime migration approaches."},
+  {icon:Target,c:"var(--amber)",t:"Use Case Discovery & Feasibility Assessment",d:"Structured discovery engagements to identify, evaluate, and prioritise AI and blockchain use cases — with commercial modelling, technical feasibility scoring, regulatory risk assessment, and a ranked opportunity matrix."},
+  {icon:BarChart3,c:"var(--gold)",t:"Performance Audit & Optimisation",d:"Independent technical audit of existing blockchain deployments and AI systems — assessing security posture, gas efficiency, model performance, data pipeline integrity, and alignment with current regulatory expectations."},
+  {icon:BookOpen,c:"var(--amber)",t:"Enterprise Training & Capability Building",d:"Structured programmes for engineering leads, product managers, and executive teams covering blockchain architecture, AI governance, responsible deployment practices, and the commercial frameworks governing emerging technology."},
 ];
 const process=[
   {n:"01",t:"Discovery",d:"A structured 2–4 week discovery engagement to map your organisation's objectives, current technology landscape, regulatory context, and strategic priorities. Output: a current-state assessment and ranked opportunity matrix."},
@@ -59,7 +59,7 @@ export default function Consulting(){return(
               style={{background:"var(--bg2)",padding:"2.5rem",transition:"background .2s",cursor:"default"}}
               onMouseEnter={e=>e.currentTarget.style.background="var(--bg3)"}
               onMouseLeave={e=>e.currentTarget.style.background="var(--bg2)"}>
-              <div style={{fontFamily:"var(--font-display)",fontSize:"3rem",fontWeight:700,color:"rgba(181,137,74,.18)",lineHeight:1,marginBottom:".75rem"}}>{p.n}</div>
+              <div style={{fontFamily:"var(--font-display)",fontSize:"3rem",fontWeight:700,color:"rgba(8,153,129,.18)",lineHeight:1,marginBottom:".75rem"}}>{p.n}</div>
               <div style={{fontFamily:"var(--font-body)",fontSize:"1rem",fontWeight:600,color:"var(--tx)",marginBottom:".6rem"}}>{p.t}</div>
               <div className="t-small">{p.d}</div>
             </motion.div>

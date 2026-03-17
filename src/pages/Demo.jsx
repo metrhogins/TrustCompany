@@ -1,11 +1,12 @@
-import React, { useState, useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import React, { useState, useRef, useEffect } from "react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
   Terminal, ShieldCheck, Cpu, Blocks, ArrowUpRight,
   Lock, Globe, CheckCircle, Copy, Check, ChevronRight,
-  BarChart2, Zap, FileText, Bot
+  BarChart2, Zap, FileText, Bot, Database, Server, Hash, FileCheck
 } from "lucide-react";
+import AttestationConsole from "@/components/AttestationConsole";
 
 const fv = {
   hidden: { opacity: 0, y: 24 },
@@ -180,6 +181,42 @@ export default function Demo() {
         </div>
       </section>
 
+      {/* ── LIVE ATTESTATION CONSOLE ── */}
+      <section style={{ background: "var(--bg)", borderBottom: "1px solid var(--border)" }}>
+        <div className="wrap sect">
+          <Reveal style={{ marginBottom: "3rem" }}>
+            <div className="t-eyebrow" style={{ marginBottom: ".75rem" }}>Live Platform Preview</div>
+            <h2 className="t-h2">The Attestation Console, Live</h2>
+            <p className="t-body-lg" style={{ maxWidth: 560, marginTop: "1rem" }}>
+              This is a sandboxed, real-time preview of TrustLedgerLabs' core attestation infrastructure — streaming cryptographic audit events, ZK-proof job manifests, and node reliability data.
+            </p>
+          </Reveal>
+          <Reveal>
+            <div style={{
+              border: "1px solid var(--border)", borderRadius: 16, overflow: "hidden",
+              boxShadow: "var(--shadow2)", background: "var(--bg2)",
+            }}>
+              <div style={{
+                padding: "0.65rem 1rem", background: "var(--bg3)",
+                borderBottom: "1px solid var(--border)",
+                display: "flex", alignItems: "center", justifyContent: "space-between",
+              }}>
+                <div style={{ display: "flex", gap: 6 }}>
+                  {["#ff5f57","#febc2e","#28c840"].map(c=><span key={c} style={{width:10,height:10,borderRadius:"50%",background:c,display:"block"}}/>)}
+                </div>
+                <span style={{ fontFamily: "'SFMono-Regular',monospace", fontSize: ".65rem", color: "var(--tx3)", letterSpacing: ".1em" }}>
+                  demo.trustledgerlabs.com — attestation-console
+                </span>
+                <span className="status-attested"><span className="attested-dot" style={{width:5,height:5}}/>Sandbox Active</span>
+              </div>
+              <div style={{ padding: "1rem" }}>
+                <AttestationConsole />
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
       {/* ── HOW IT WORKS ── */}
       <section style={{ background: "var(--bg3)", borderBottom: "1px solid var(--border)" }}>
         <div className="wrap sect">
@@ -332,7 +369,7 @@ export default function Demo() {
               }}>
                 {[
                   { c: "#22c55e", t: "✔ Establishing secure channel..." },
-                  { c: "#6366f1", t: "✔ Validating provisioning token..." },
+                  { c: "var(--amber)", t: "✔ Validating provisioning token..." },
                   { c: "#22c55e", t: "✔ Session credentials issued." },
                   { c: "var(--gold)", t: "✔ Access provisioned — demo environment ready." },
                 ].map((l, i) => (
@@ -380,6 +417,69 @@ export default function Demo() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── PROOF OF INTEGRITY TIMELINE ── */}
+      <section style={{ background: "var(--bg)", borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)" }}>
+        <div className="wrap sect">
+          <Reveal style={{ marginBottom: "3rem" }}>
+            <div className="t-eyebrow" style={{ marginBottom: ".75rem" }}>Attestation Lifecycle</div>
+            <h2 className="t-h2">Proof of Integrity Trail</h2>
+            <p className="t-body-lg" style={{ maxWidth: 520, marginTop: "1rem" }}>
+              Every job generates an immutable, on-chain breadcrumb trail. From request to delivered result, each step is cryptographically sealed.
+            </p>
+          </Reveal>
+          <Reveal>
+            <div style={{
+              background: "var(--bg2)", border: "1px solid var(--border)", borderRadius: 16,
+              overflow: "hidden", boxShadow: "var(--shadow)",
+            }}>
+              {[
+                { icon: Database, step: "01", label: "Request Received", desc: "Inference job submitted with input payload hash. Session token issued.", time: "00:00.000", done: true },
+                { icon: Server,   step: "02", label: "Node Assigned",    desc: "SGX enclave node selected via verifiable random function. Node pubkey registered.", time: "00:00.048", done: true },
+                { icon: Cpu,      step: "03", label: "Computation Complete", desc: "Model inference executed inside hardware-isolated enclave. Output generated.", time: "00:01.241", done: true },
+                { icon: ShieldCheck, step: "04", label: "Attestation Generated", desc: "ZK-SNARK proof computed over input/output hashes. Proof anchored to chain.", time: "00:01.387", highlight: true, done: true },
+                { icon: FileCheck, step: "05", label: "Result Delivered", desc: "Attested result and proof manifest returned to client. Audit log entry finalised.", time: "00:01.412", done: true },
+              ].map((item, i) => (
+                <motion.div key={item.step}
+                  variants={{ hidden: { opacity: 0, x: -20 }, visible: (i) => ({ opacity: 1, x: 0, transition: { duration: 0.5, delay: i * 0.12, ease: [0.22,1,0.36,1] } }) }}
+                  custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }}
+                  style={{
+                    display: "grid", gridTemplateColumns: "52px 1fr auto",
+                    gap: "1.25rem", alignItems: "flex-start",
+                    padding: "1.35rem 1.5rem",
+                    borderBottom: i < 4 ? "1px solid var(--border)" : "none",
+                    background: item.highlight ? "var(--gold-bg)" : "transparent",
+                    borderLeft: item.highlight ? "3px solid var(--gold)" : "3px solid transparent",
+                    transition: "background 0.2s",
+                    cursor: "default",
+                  }}
+                  onMouseEnter={e => { if (!item.highlight) e.currentTarget.style.background = "var(--bg3)"; }}
+                  onMouseLeave={e => { if (!item.highlight) e.currentTarget.style.background = "transparent"; }}>
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+                    <div style={{
+                      width: 38, height: 38, borderRadius: "50%",
+                      background: item.highlight ? "var(--gold)" : item.done ? "var(--gold-bg)" : "var(--bg3)",
+                      border: `1px solid ${item.highlight ? "var(--gold)" : "var(--gold-bd)"}`,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                    }}>
+                      <item.icon size={16} style={{ color: item.highlight ? "#fff" : "var(--gold)" }} />
+                    </div>
+                    <div style={{ fontFamily: "'SFMono-Regular',monospace", fontSize: "0.6rem", color: "var(--tx3)" }}>{item.step}</div>
+                  </div>
+                  <div>
+                    <div style={{ fontFamily: "var(--font-display)", fontSize: "0.95rem", fontWeight: 700, color: item.highlight ? "var(--gold)" : "var(--tx)", marginBottom: 4 }}>
+                      {item.label}
+                      {item.highlight && <span className="status-attested" style={{ marginLeft: 8 }}><span className="attested-dot" style={{width:5,height:5}}/>Sealed</span>}
+                    </div>
+                    <div style={{ fontFamily: "var(--font-body)", fontSize: "0.8rem", color: "var(--tx2)", lineHeight: 1.6 }}>{item.desc}</div>
+                  </div>
+                  <div style={{ fontFamily: "'SFMono-Regular',monospace", fontSize: "0.68rem", color: "var(--tx3)", whiteSpace: "nowrap", paddingTop: 10 }}>{item.time}</div>
+                </motion.div>
+              ))}
+            </div>
+          </Reveal>
         </div>
       </section>
 

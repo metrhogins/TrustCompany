@@ -19,7 +19,7 @@ const JOBS = [
 ];
 
 const DEPT_COLORS = {
-  Engineering: { bg: "rgba(99,102,241,0.1)",  text: "#6366f1",      border: "rgba(99,102,241,0.25)" },
+  Engineering: { bg: "rgba(8,153,129,0.1)",  text: "#089981",      border: "rgba(99,102,241,0.25)" },
   Marketing:   { bg: "var(--gold-bg)",         text: "var(--gold)",  border: "var(--gold-bd)" },
   Growth:      { bg: "rgba(0,212,170,0.1)",    text: "#00d4aa",      border: "rgba(0,212,170,0.25)" },
   Design:      { bg: "rgba(168,85,247,0.1)",   text: "#a855f7",      border: "rgba(168,85,247,0.25)" },

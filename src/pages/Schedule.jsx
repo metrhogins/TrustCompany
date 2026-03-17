@@ -135,7 +135,7 @@ export default function Schedule() {
             >
               <div
                 className="calendly-inline-widget"
-                data-url="https://calendly.com/ledgerlink928/30min?hide_gdpr_banner=1&primary_color=b5894a"
+                data-url="https://calendly.com/ledgerlink928/30min?hide_gdpr_banner=1&primary_color=089981"
                 style={{ minWidth: 320, height: 700 }}
               />
             </div>

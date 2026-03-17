@@ -48,7 +48,7 @@ export default function Footer() {
         {/* Company (Moved here from Products) */}
         <div>
           <div style={colTitle}>Company</div>
-          {[{to:"/about",l:"About Us"},{to:"/blog",l:"Insights"},{to:"/contact",l:"Contact"},{to:"/jobs",l:"Open Roles"}].map(({to,l}) => (
+          {[{to:"/about",l:"About Us"},{to:"/blog",l:"Insights"},{to:"/audit-log",l:"Audit Log"},{to:"/contact",l:"Contact"},{to:"/jobs",l:"Open Roles"}].map(({to,l}) => (
             <Link key={to} to={to} style={lnk}
               onMouseEnter={e=>e.currentTarget.style.color="var(--gold)"}
               onMouseLeave={e=>e.currentTarget.style.color="var(--tx2)"}>{l}</Link>

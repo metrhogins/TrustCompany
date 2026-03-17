@@ -65,7 +65,7 @@ export default function About(){
                 style={{background:"var(--bg2)",padding:"2.5rem",cursor:"default",transition:"background .2s"}}
                 onMouseEnter={e=>e.currentTarget.style.background="var(--bg3)"}
                 onMouseLeave={e=>e.currentTarget.style.background="var(--bg2)"}>
-                <div style={{fontFamily:"var(--font-display)",fontSize:"3.5rem",fontWeight:700,color:"rgba(181,137,74,.18)",lineHeight:1,marginBottom:".75rem"}}>{item.n}</div>
+                <div style={{fontFamily:"var(--font-display)",fontSize:"3.5rem",fontWeight:700,color:"rgba(8,153,129,.18)",lineHeight:1,marginBottom:".75rem"}}>{item.n}</div>
                 <div style={{fontFamily:"var(--font-body)",fontSize:"1rem",fontWeight:600,color:"var(--tx)",marginBottom:".75rem"}}>{item.title}</div>
                 <div className="t-small">{item.text}</div>
               </motion.div>

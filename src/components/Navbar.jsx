@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { useTheme } from "@/theme/ThemeProvider";
-import { Moon, Sun, ChevronDown, Menu, X, Blocks, Brain, Lightbulb, ArrowUpRight } from "lucide-react";
+import { Moon, Sun, ChevronDown, Menu, X, Blocks, Brain, Lightbulb, ArrowUpRight, ShieldCheck } from "lucide-react";
 import logo from "/favicon.png";
 
 const products = [
-  { to:"/products/blockchain", icon:Blocks,    label:"Blockchain Solutions", desc:"Smart contracts, DeFi & protocol infrastructure" },
-  { to:"/products/ai",         icon:Brain,     label:"AI Platform",          desc:"Autonomous agents, NLP & ML at scale" },
-  { to:"/products/consulting", icon:Lightbulb, label:"Consulting",           desc:"Strategy, advisory & digital transformation" },
+  { to:"/products/blockchain", icon:Blocks,      label:"Blockchain Solutions",   desc:"Smart contracts, DeFi & protocol infrastructure" },
+  { to:"/products/ai",         icon:Brain,        label:"AI Platform",            desc:"Autonomous agents, NLP & ML at scale" },
+  { to:"/products/consulting", icon:Lightbulb,    label:"Consulting",             desc:"Strategy, advisory & digital transformation" },
+  { to:"/attestation",         icon:ShieldCheck,  label:"Attestation Console",    desc:"Live ZK-proof verified inference dashboard" },
 ];
 
 export default function Navbar() {
@@ -65,7 +66,7 @@ export default function Navbar() {
 
           {/* Desktop nav */}
           <nav style={{ display:"flex", alignItems:"center", gap:2 }} className="nb-desk">
-            {[{to:"/about",l:"About"},{to:"/blog",l:"Insights"},{to:"/jobs",l:"Open Roles"}].map(({to,l}) => (
+            {[{to:"/about",l:"About"},{to:"/blog",l:"Insights"},{to:"/audit-log",l:"Audit Log"},{to:"/jobs",l:"Open Roles"}].map(({to,l}) => (
               <NavLink key={to} to={to}
                 style={({isActive}) => linkStyle(isActive)}
                 onMouseEnter={e => { if(e.currentTarget.style.background==="transparent"){e.currentTarget.style.color="var(--tx)";e.currentTarget.style.background="var(--bg3)";} }}
@@ -151,7 +152,7 @@ export default function Navbar() {
           </Link>
           <button onClick={() => setMob(false)} style={{ width:36, height:36, borderRadius:9, display:"flex", alignItems:"center", justifyContent:"center", background:"var(--bg3)", border:"1px solid var(--border)", color:"var(--tx2)", cursor:"pointer" }}><X size={17}/></button>
         </div>
-        {[{to:"/about",l:"About"},{to:"/blog",l:"Insights"},{to:"/jobs",l:"Open Roles"}].map(({to,l}) => (
+        {[{to:"/about",l:"About"},{to:"/blog",l:"Insights"},{to:"/audit-log",l:"Audit Log"},{to:"/jobs",l:"Open Roles"}].map(({to,l}) => (
           <Link key={to} to={to} onClick={() => setMob(false)} style={{ padding:"0.95rem 0", fontSize:"1.05rem", fontWeight:500, color:"var(--tx)", textDecoration:"none", borderBottom:"1px solid var(--border)" }}>{l}</Link>
         ))}
         <div style={{ padding:"0.95rem 0", borderBottom:"1px solid var(--border)" }}>

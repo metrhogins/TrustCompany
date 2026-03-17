@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { ShieldCheck, Users, Globe2, Cpu, Blocks, BarChart2, Linkedin, ArrowUpRight, Zap, Star, Lock, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
+import AttestationConsole from "@/components/AttestationConsole";
 
 const fv = { hidden:{opacity:0,y:26}, visible:(i=0)=>({opacity:1,y:0,transition:{duration:.6,delay:i*.1,ease:[.22,1,.36,1]}}) };
 function Reveal({children,i=0,style={}}){
@@ -10,17 +11,17 @@ function Reveal({children,i=0,style={}}){
 }
 
 const stats=[
-  {icon:ShieldCheck,value:"500+",  label:"Enterprise Clients Served",   sub:"Across 12+ global verticals",    c:"#b5894a"},
-  {icon:Globe2,     value:"20+",   label:"Production Deployments",       sub:"Live in 8 countries",            c:"#6366f1"},
-  {icon:Users,      value:"70+",   label:"Expert Specialists",           sub:"Engineers, researchers & strategists", c:"#b5894a"},
-  {icon:BarChart2,  value:"99.99%",label:"Platform Uptime SLA",          sub:"Enterprise-grade reliability",   c:"#6366f1"},
+  {icon:ShieldCheck,value:"500+",  label:"Enterprise Clients Served",   sub:"Across 12+ global verticals",    c:"var(--gold)"},
+  {icon:Globe2,     value:"20+",   label:"Production Deployments",       sub:"Live in 8 countries",            c:"var(--amber)"},
+  {icon:Users,      value:"70+",   label:"Expert Specialists",           sub:"Engineers, researchers & strategists", c:"var(--gold)"},
+  {icon:BarChart2,  value:"99.99%",label:"Platform Uptime SLA",          sub:"Enterprise-grade reliability",   c:"var(--amber)"},
 ];
 const techTags=[
-  {icon:Cpu,        text:"AI-Driven Automation"},
-  {icon:Blocks,     text:"Smart Contract Infrastructure"},
-  {icon:ShieldCheck,text:"Zero-Trust Security"},
-  {icon:Globe2,     text:"Decentralised Applications"},
-  {icon:TrendingUp, text:"Predictive Analytics"},
+  {icon:Cpu,        text:"Verifiable Inference"},
+  {icon:Blocks,     text:"On-Chain Attestation"},
+  {icon:ShieldCheck,text:"ZK-Proof Layer"},
+  {icon:Globe2,     text:"SGX Enclave Compute"},
+  {icon:TrendingUp, text:"Cryptographic Audit Trail"},
 ];
 const timeline=[
   {year:"2024",title:"Company Founded",desc:"TrustLedgerLabs Pte. Ltd. incorporated in Singapore — purpose-built to architect decentralised, AI-augmented systems enterprises can trust unconditionally."},
@@ -39,39 +40,68 @@ export default function Home(){
     <div style={{background:"var(--bg)",color:"var(--tx)"}}>
 
       {/* HERO */}
-      <section style={{position:"relative",overflow:"hidden",minHeight:"88vh",display:"flex",alignItems:"center"}}>
-        <div style={{position:"absolute",inset:0,backgroundImage:"url('https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2400')",backgroundSize:"cover",backgroundPosition:"center 35%",filter:"grayscale(15%)"}}/>
-        <div style={{position:"absolute",inset:0,background:"linear-gradient(140deg,rgba(13,11,9,.94) 0%,rgba(13,11,9,.72) 55%,rgba(13,11,9,.48) 100%)"}}/>
-        <div className="tex-grid" style={{position:"absolute",inset:0}}/>
-        <div className="wrap" style={{position:"relative",zIndex:1,paddingTop:"5rem",paddingBottom:"5rem"}}>
+      <section style={{position:"relative",overflow:"hidden",background:"var(--bg2)",borderBottom:"1px solid var(--border)"}}>
+        {/* Ledger/merkle background */}
+        <div className="tex-grid" style={{position:"absolute",inset:0,pointerEvents:"none"}}/>
+        {/* Top accent line */}
+        <div style={{position:"absolute",top:0,left:0,right:0,height:2,background:"linear-gradient(90deg,transparent,var(--gold) 30%,var(--gold2) 70%,transparent)",opacity:.7}}/>
+
+        <div className="wrap" style={{position:"relative",zIndex:1,paddingTop:"5.5rem",paddingBottom:"4rem"}}>
           <motion.div initial={{opacity:0,y:32}} animate={{opacity:1,y:0}} transition={{duration:.8}}>
-            <div className="badge" style={{marginBottom:"2rem",color:"var(--gold)"}}>
-              <span style={{width:6,height:6,borderRadius:"50%",background:"var(--gold)",flexShrink:0}}/>
-              Est. 2024 &nbsp;·&nbsp; Singapore &nbsp;·&nbsp; AI &amp; Blockchain Infrastructure
+            <div className="badge" style={{marginBottom:"1.75rem",color:"var(--gold)",borderColor:"var(--gold-bd)",background:"var(--gold-bg)"}}>
+              <span className="attested-dot"/>
+              Trust Infrastructure &nbsp;·&nbsp; Est. 2024 &nbsp;·&nbsp; Singapore
             </div>
-            <h1 className="t-display" style={{color:"#f0ece4",marginBottom:"1.5rem"}}>
-              Building the Future<br/>of <em className="t-italic">Trusted</em> Intelligence
+            <h1 className="t-display" style={{color:"var(--tx)",marginBottom:"1.25rem",maxWidth:780}}>
+              Cryptographically<br/><em className="t-italic" style={{color:"var(--gold)"}}>Attested</em> Intelligence
             </h1>
-            <p className="t-body-lg" style={{color:"rgba(240,236,228,.6)",maxWidth:580,marginBottom:"2.75rem"}}>
-              TrustLedgerLabs architects enterprise-grade systems at the convergence of Artificial Intelligence and Blockchain — where verifiable trust, autonomous execution, and institutional-grade security form an inseparable whole.
+            <p className="t-body-lg" style={{maxWidth:560,marginBottom:"2rem"}}>
+              TrustLedgerLabs generates verifiable compute results anchored on-chain — providing cryptographic evidence of AI integrity for legal, financial, and institutional contexts.
             </p>
-            <div style={{display:"flex",flexWrap:"wrap",gap:8,marginBottom:"3rem"}}>
+            <div style={{display:"flex",flexWrap:"wrap",gap:7,marginBottom:"2.5rem"}}>
               {techTags.map(t=>(
-                <span key={t.text} style={{display:"inline-flex",alignItems:"center",gap:6,padding:"6px 13px",background:"rgba(181,137,74,.1)",border:"1px solid rgba(181,137,74,.22)",borderRadius:7,fontFamily:"var(--font-body)",fontSize:".76rem",color:"rgba(240,236,228,.75)",fontWeight:500}}>
-                  <t.icon size={12} style={{color:"var(--gold)"}}/>{t.text}
+                <span key={t.text} style={{display:"inline-flex",alignItems:"center",gap:6,padding:"5px 12px",background:"var(--gold-bg)",border:"1px solid var(--gold-bd)",borderRadius:7,fontFamily:"var(--font-body)",fontSize:".72rem",color:"var(--tx2)",fontWeight:500}}>
+                  <t.icon size={11} style={{color:"var(--gold)"}}/>{t.text}
                 </span>
               ))}
             </div>
-            <div style={{display:"flex",gap:"0.85rem",flexWrap:"wrap"}}>
-              <Link to="/contact" className="btn btn-gold">Engage TrustLedgerLabs <ArrowUpRight size={14}/></Link>
-              <Link to="/about" className="btn btn-outline" style={{color:"rgba(240,236,228,.75)",borderColor:"rgba(240,236,228,.18)"}}>Our Story</Link>
+            <div style={{display:"flex",gap:"0.85rem",flexWrap:"wrap",marginBottom:"3.5rem"}}>
+              <Link to="/contact" className="btn btn-gold" style={{background:"var(--gold)",color:"var(--bg)"}}>Engage TrustLedgerLabs <ArrowUpRight size={14}/></Link>
+              <Link to="/about" className="btn btn-outline">Our Story</Link>
             </div>
+
+            {/* Attestation Console */}
+            <motion.div initial={{opacity:0,y:28}} animate={{opacity:1,y:0}} transition={{duration:.9,delay:.35}}>
+              <div style={{marginBottom:".75rem",display:"flex",alignItems:"center",gap:8}}>
+                <ShieldCheck size={13} style={{color:"var(--gold)"}}/>
+                <span style={{fontFamily:"var(--font-body)",fontSize:".68rem",fontWeight:700,letterSpacing:".16em",textTransform:"uppercase",color:"var(--tx3)"}}>Live Attestation Console · Sandboxed Demo Environment</span>
+              </div>
+              <div style={{
+                border:"1px solid var(--border)",
+                borderRadius:16,
+                overflow:"hidden",
+                boxShadow:"var(--shadow2)",
+                background:"var(--bg3)",
+              }}>
+                {/* Console top bar */}
+                <div style={{padding:"0.6rem 1rem",background:"var(--bg)",borderBottom:"1px solid var(--border)",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                  <div style={{display:"flex",gap:6}}>
+                    {["#ff5f57","#febc2e","#28c840"].map(c=><span key={c} style={{width:10,height:10,borderRadius:"50%",background:c,display:"block"}}/>)}
+                  </div>
+                  <div style={{fontFamily:"'SFMono-Regular',monospace",fontSize:".65rem",color:"var(--tx3)",letterSpacing:".1em"}}>trustledgerlabs.com — attestation-console</div>
+                  <span className="status-attested"><span className="attested-dot" style={{width:5,height:5}}/>Live</span>
+                </div>
+                <div style={{padding:"1rem"}}>
+                  <AttestationConsole/>
+                </div>
+              </div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
 
       {/* MISSION */}
-      <section style={{background:"var(--bg2)",borderBottom:"1px solid var(--border)"}}>
+      <section style={{background:"var(--bg3)",borderBottom:"1px solid var(--border)"}}>
         <div className="wrap sect-sm">
           <Reveal>
             <div style={{maxWidth:840}}>
@@ -88,7 +118,7 @@ export default function Home(){
       </section>
 
       {/* STATS */}
-      <section style={{background:"var(--bg3)"}}>
+      <section style={{background:"var(--bg)"}}>
         <div className="wrap sect">
           <Reveal style={{textAlign:"center",marginBottom:"3.5rem"}}>
             <div className="t-eyebrow" style={{marginBottom:".75rem"}}>Traction &amp; Impact</div>
@@ -103,7 +133,7 @@ export default function Home(){
                 <div style={{width:42,height:42,borderRadius:11,background:s.c+"18",display:"flex",alignItems:"center",justifyContent:"center",marginBottom:"1.25rem"}}>
                   <s.icon size={20} style={{color:s.c}}/>
                 </div>
-                <div className="stat-num" style={{marginBottom:".4rem"}}>{s.value}</div>
+                <div className="stat-num" style={{marginBottom:".4rem",color:s.c}}>{s.value}</div>
                 <div style={{fontFamily:"var(--font-body)",fontSize:".88rem",fontWeight:600,color:"var(--tx)",marginBottom:".25rem"}}>{s.label}</div>
                 <div className="t-small">{s.sub}</div>
               </motion.div>
@@ -113,7 +143,7 @@ export default function Home(){
       </section>
 
       {/* CEO */}
-      <section style={{background:"var(--bg)"}}>
+      <section style={{background:"var(--bg2)"}}>
         <div className="wrap sect">
           <Reveal style={{marginBottom:"3.5rem"}}>
             <div className="t-eyebrow" style={{marginBottom:".75rem"}}>Executive Leadership</div>
@@ -128,8 +158,8 @@ export default function Home(){
                     style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"top center",filter:"grayscale(8%)",display:"block",transition:"transform .5s,filter .4s"}}
                     onMouseEnter={e=>{e.target.style.transform="scale(1.04)";e.target.style.filter="grayscale(0%)"}}
                     onMouseLeave={e=>{e.target.style.transform="scale(1)";e.target.style.filter="grayscale(8%)"}}/>
-                  <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"1.75rem",background:"linear-gradient(to top,rgba(13,11,9,.95),transparent)",borderRadius:"0 0 22px 22px"}}>
-                    <div style={{fontFamily:"var(--font-display)",fontSize:"1.65rem",fontWeight:700,color:"#f0ece4",marginBottom:4}}>Jerald Young</div>
+                  <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"1.75rem",background:"linear-gradient(to top,rgba(14,17,32,.95),transparent)",borderRadius:"0 0 22px 22px"}}>
+                    <div style={{fontFamily:"var(--font-display)",fontSize:"1.65rem",fontWeight:700,color:"#E8EDF8",marginBottom:4}}>Jerald Young</div>
                     <div style={{fontFamily:"var(--font-body)",fontSize:".68rem",fontWeight:700,letterSpacing:".18em",textTransform:"uppercase",color:"var(--gold)"}}>Chief Executive Officer &amp; Co-Founder</div>
                   </div>
                 </div>
@@ -168,7 +198,7 @@ export default function Home(){
       </section>
 
       {/* TIMELINE */}
-      <section style={{background:"var(--bg2)"}}>
+      <section style={{background:"var(--bg3)"}}>
         <div className="wrap sect">
           <Reveal style={{marginBottom:"3rem"}}>
             <div className="t-eyebrow" style={{marginBottom:".75rem"}}>Corporate History</div>
@@ -188,7 +218,7 @@ export default function Home(){
       </section>
 
       {/* CULTURE */}
-      <section style={{background:"var(--bg3)"}}>
+      <section style={{background:"var(--bg)"}}>
         <div className="wrap sect">
           <Reveal style={{marginBottom:"2.5rem"}}>
             <div className="t-eyebrow" style={{marginBottom:".75rem"}}>How We Operate</div>
@@ -197,7 +227,7 @@ export default function Home(){
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:"1.5rem",marginBottom:"4rem"}}>
             {culture.map((item,i)=>(
               <motion.div key={item.title} className="card-hover" variants={fv} custom={i} initial="hidden" whileInView="visible" viewport={{once:true,margin:"-60px"}} style={{padding:"2rem"}}>
-                <div style={{width:46,height:46,background:"var(--gold-bg)",borderRadius:12,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:"1.25rem",color:"var(--gold)"}}>
+                <div style={{width:46,height:46,background:"var(--gold-bg)",border:"1px solid var(--gold-bd)",borderRadius:12,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:"1.25rem",color:"var(--gold)"}}>
                   <item.icon size={22}/>
                 </div>
                 <div style={{fontFamily:"var(--font-body)",fontSize:"1rem",fontWeight:600,color:"var(--tx)",marginBottom:".6rem"}}>{item.title}</div>
@@ -207,20 +237,21 @@ export default function Home(){
           </div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"1.25rem"}}>
             {["AI.png","Blockchain.png","Furturistic.png"].map(src=>(
-              <img key={src} src={src} alt="" style={{borderRadius:16,height:220,width:"100%",objectFit:"cover",border:"1px solid var(--border)",transition:"transform .4s,box-shadow .4s"}}
-                onMouseEnter={e=>{e.currentTarget.style.transform="scale(1.02)";e.currentTarget.style.boxShadow="var(--shadow2)"}}
-                onMouseLeave={e=>{e.currentTarget.style.transform="scale(1)";e.currentTarget.style.boxShadow="none"}}/>
+              <img key={src} src={src} alt="" style={{borderRadius:16,height:220,width:"100%",objectFit:"cover",border:"1px solid var(--border)",transition:"transform .4s,box-shadow .4s",filter:"saturate(0.9) contrast(1.05)"}}
+                onMouseEnter={e=>{e.currentTarget.style.transform="scale(1.02)";e.currentTarget.style.boxShadow="var(--shadow2)";e.currentTarget.style.filter="saturate(1.1) contrast(1.05)"}}
+                onMouseLeave={e=>{e.currentTarget.style.transform="scale(1)";e.currentTarget.style.boxShadow="none";e.currentTarget.style.filter="saturate(0.9) contrast(1.05)"}}/>
             ))}
           </div>
         </div>
       </section>
 
       {/* CTA BANNER */}
-      <section style={{background:"var(--bg4)",padding:"6rem 2rem",textAlign:"center",position:"relative",overflow:"hidden"}}>
-        <div className="tex-grid" style={{position:"absolute",inset:0,opacity:.25}}/>
+      <section style={{background:"var(--bg2)",padding:"6rem 2rem",textAlign:"center",position:"relative",overflow:"hidden",borderTop:"1px solid var(--border)"}}>
+        <div className="tex-grid" style={{position:"absolute",inset:0,opacity:.4}}/>
+        <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 60% 50% at 50% 50%, var(--gold-bg), transparent)"}}/>
         <div style={{position:"relative",zIndex:1,maxWidth:640,margin:"0 auto"}}>
           <Reveal>
-            <div className="t-eyebrow" style={{color:"var(--gold2)",marginBottom:"1rem"}}>Ready to Begin?</div>
+            <div className="t-eyebrow" style={{color:"var(--gold)",marginBottom:"1rem"}}>Ready to Begin?</div>
             <h2 className="t-h2" style={{marginBottom:"1.25rem"}}>Let's Build Something That Endures</h2>
             <p className="t-body-lg" style={{marginBottom:"2.5rem"}}>
               Whether you're architecting a blockchain protocol, deploying AI agents at enterprise scale, or navigating a complex digital transformation — we have the expertise and the track record to guide you.

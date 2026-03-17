@@ -168,7 +168,7 @@ export default function ChatWidget() {
               width: 56, height: 56, borderRadius: 16,
               background: "var(--gold)", border: "none", cursor: "pointer",
               display: "flex", alignItems: "center", justifyContent: "center",
-              boxShadow: "0 8px 32px rgba(181,137,74,0.45), 0 2px 8px rgba(0,0,0,0.12)",
+              boxShadow: "0 8px 32px rgba(8,153,129,0.45), 0 2px 8px rgba(0,0,0,0.12)",
             }}
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.95 }}
@@ -220,7 +220,7 @@ export default function ChatWidget() {
               <div style={{
                 width: 36, height: 36, borderRadius: 10, background: "var(--gold)",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                flexShrink: 0, boxShadow: "0 2px 8px rgba(181,137,74,0.4)",
+                flexShrink: 0, boxShadow: "0 2px 8px rgba(8,153,129,0.4)",
               }}>
                 <Sparkles size={16} color="#fff" />
               </div>
