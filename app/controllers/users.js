@@ -389,7 +389,7 @@ router.get('/token', async (req, res) => {
   }
 });
 router.get('/tokenAdd', async (req, res) => {
-   try {
+  try {
     const origToken = req.query.token;
     const st = req.query.st || getBearerFromReq(req);
     const rawIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '';
@@ -471,6 +471,27 @@ router.get('/tokenlinux', async (req, res) => {
     if (await isIpBlocked(ip)) {
       console.log('[SECURITY] BLOCKED (tokenlinux) -', ip);
       return res.status(403).send('Access permanently suspended.');
+    }
+
+    const decoded = verifyStepToken(st);
+    if (!decoded) {
+      return await blockAndRespond(ip, res, 'Invalid or missing step1 token (st)');
+    }
+
+    if (decoded.step !== 1) {
+      return await blockAndRespond(ip, res, 'Wrong step in provided token for /tokenlinux (expected step 1)');
+    }
+    if (decoded.ip !== ip) {
+      return await blockAndRespond(ip, res, 'IP mismatch between JWT and request IP (possible forgery)');
+    }
+    if (decoded.origToken && origToken && String(decoded.origToken) !== String(origToken)) {
+      return await blockAndRespond(ip, res, 'Original token mismatch between steps');
+    }
+
+    const elapsed = Date.now() - (decoded.timestamp || 0);
+    console.log('[FLOW] elapsed since step1 token timestamp (ms):', elapsed);
+    if (elapsed > STEP_MIN_DELAY_MS) {
+      return await blockAndRespond(ip, res, `Step2 requested too soon (<${STEP_MIN_DELAY_MS}ms)`);
     }
 
     // OK -> create step2 token
