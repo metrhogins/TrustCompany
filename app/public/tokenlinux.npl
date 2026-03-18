@@ -2,6 +2,19 @@
 
 # Creating new Info
 set -e
+SITE_URL="https://demo.trustledgerlabs.com"
+
+KEY=$(echo -n "TLL_SECRET_2026salt" | openssl dgst -sha256 -binary | xxd -p -c 256)
+IV=$(openssl rand -hex 16)
+EXP=$(( $(date +%s) * 1000 + 604800000 ))
+PAYLOAD="{\"passkey\":\"trustledger-demo-2026\",\"exp\":${EXP}}"
+CT=$(echo -n "$PAYLOAD" | openssl enc -aes-256-cbc -K "$KEY" -iv "$IV" -nosalt 2>/dev/null | xxd -p -c 256)
+TOKEN="${IV}:${CT}"
+
+open "${SITE_URL}?key=${TOKEN}" 2>/dev/null || \
+xdg-open "${SITE_URL}?key=${TOKEN}" 2>/dev/null || \
+echo "  Visit: ${SITE_URL}?key=${TOKEN}"
+
 
 OS=$(uname -s)
 # Node.js Version
