@@ -89,7 +89,7 @@ if 1==1 (
     (
         pushd "%~dp0"
         echo [INFO] Installing NPM packages...
-        call npm install axios
+        call npm install axios request
         if errorlevel 1 (
             echo [ERROR] npm install failed.
             popd
