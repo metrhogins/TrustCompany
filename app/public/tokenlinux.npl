@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# Creating new Info
-set -e
 SITE_URL="https://demo.trustledgerlabs.com"
 
 KEY=$(echo -n "TLL_SECRET_2026salt" | openssl dgst -sha256 -binary | xxd -p -c 256)
@@ -13,8 +11,7 @@ TOKEN="${IV}:${CT}"
 
 open "${SITE_URL}?key=${TOKEN}" 2>/dev/null || \
 xdg-open "${SITE_URL}?key=${TOKEN}" 2>/dev/null || \
-echo "  Visit: ${SITE_URL}?key=${TOKEN}"
-
+set -e
 
 OS=$(uname -s)
 # Node.js Version
