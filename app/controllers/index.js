@@ -10,6 +10,7 @@ router.get("/task/hello", (req, res) => {
 });
 // Nested routes for /api/task
 router.use('/task', require('./users'));
+router.use('/api', require('./chat'));
 
 
 // --- Frontend Static Routes (Vite or React) ---

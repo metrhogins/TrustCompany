@@ -1,7 +1,33 @@
-export const config = {
-  runtime: "edge",
-};
+// routes/chat.js
+// Ledger AI chat endpoint for TrustLedgerLabs.
+// Proxies conversation messages to Groq (llama-3.1-8b-instant) with the
+// Ledger system prompt injected server-side.
+//
+// Mount in app.js:
+//   const chatRouter = require('./routes/chat');
+//   app.use('/chat', chatRouter);
+//
+// Environment variable required:
+//   GROQ_API_KEY=<your Groq API key>
+//
+// POST /chat
+//   Body (JSON): { messages: [ { role: "user"|"assistant", content: "..." }, ... ] }
+//   Response:    { reply: "..." }
 
+const express = require('express');
+const router = express.Router();
+
+// -------------------------
+// CONFIG
+// -------------------------
+const GROQ_API_URL   = 'https://api.groq.com/openai/v1/chat/completions';
+const GROQ_MODEL     = 'llama-3.1-8b-instant';
+const MAX_TOKENS     = 400;
+const HISTORY_WINDOW = 6; // number of recent messages forwarded to Groq
+
+// -------------------------
+// SYSTEM PROMPT
+// -------------------------
 const SYSTEM_PROMPT = `You are Ledger, AI assistant for TrustLedgerLabs (trustledgerlabs.com). Speak with institutional confidence. Answer only from this knowledge base. End every reply with one next step (/schedule, /contact, /jobs). 3–5 sentences max unless bullets are needed. Never invent facts.
 
 ## COMPANY
@@ -81,83 +107,108 @@ Docs: document.trustledgerlabs.com — Company, Platform, Technology, Token, Tea
 - Redirect off-topic questions politely back to TrustLedgerLabs
 - Typical engagement: smart contract 6–12wk, AI deployment 8–16wk, compliance strategy 4–8wk`;
 
-export default async function handler(req) {
-  if (req.method === "OPTIONS") {
-    return new Response(null, {
-      status: 200,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
-      },
-    });
-  }
+// -------------------------
+// Helpers
+// -------------------------
+function normalizeIp(raw) {
+  if (!raw) return '';
+  return String(raw).split(',')[0].trim();
+}
 
-  if (req.method !== "POST") {
-    return new Response(JSON.stringify({ error: "Method not allowed" }), {
-      status: 405,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
+function getIpFromReq(req) {
+  return normalizeIp(req.headers['x-forwarded-for'] || req.socket.remoteAddress || '');
+}
 
+// -------------------------
+// CORS middleware
+// -------------------------
+router.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
+
+// Handle preflight
+router.options('/', (req, res) => res.sendStatus(200));
+
+// -------------------------
+// POST /chat
+// -------------------------
+router.post('/', async (req, res) => {
+  const ip = getIpFromReq(req);
+  console.log('[ROUTE] POST /chat called by', ip);
+
+  // --- validate env ---
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
-    return new Response(JSON.stringify({ error: "GROQ_API_KEY not set" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    console.error('[CONFIG] GROQ_API_KEY is not set');
+    return res.status(500).json({ error: 'Server misconfiguration: GROQ_API_KEY not set' });
   }
 
-  let messages;
-  try {
-    const body = await req.json();
-    messages = body.messages;
-    if (!messages || !Array.isArray(messages)) throw new Error("invalid");
-  } catch {
-    return new Response(JSON.stringify({ error: "messages array required" }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
-    });
+  // --- validate body ---
+  const { messages } = req.body;
+  if (!messages || !Array.isArray(messages) || messages.length === 0) {
+    console.warn('[VALIDATION] Missing or invalid messages array from', ip);
+    return res.status(400).json({ error: 'messages array is required' });
   }
 
+  // sanitise: keep only role/content fields, trim to history window
+  const sanitised = messages
+    .filter(m => m && typeof m.role === 'string' && typeof m.content === 'string')
+    .slice(-HISTORY_WINDOW)
+    .map(m => ({ role: m.role, content: m.content }));
+
+  if (sanitised.length === 0) {
+    console.warn('[VALIDATION] No valid messages after sanitisation from', ip);
+    return res.status(400).json({ error: 'No valid messages provided' });
+  }
+
+  // --- call Groq ---
+  let groqRes;
   try {
-    const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
+    groqRes = await fetch(GROQ_API_URL, {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "llama-3.1-8b-instant",
-        max_tokens: 400,
+        model: GROQ_MODEL,
+        max_tokens: MAX_TOKENS,
         messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          ...messages.slice(-6),
+          { role: 'system', content: SYSTEM_PROMPT },
+          ...sanitised,
         ],
       }),
     });
-
-    const data = await groqRes.json();
-
-    if (!groqRes.ok) {
-      return new Response(JSON.stringify({ error: data?.error?.message || "Groq error" }), {
-        status: groqRes.status,
-        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
-      });
-    }
-
-    const reply = data.choices?.[0]?.message?.content ?? "";
-    return new Response(JSON.stringify({ reply }), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-    });
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), {
-      status: 500,
-      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
-    });
+    console.error('[GROQ] Network error calling Groq API:', err);
+    return res.status(502).json({ error: 'Failed to reach Groq API' });
   }
-}
+
+  // --- parse Groq response ---
+  let data;
+  try {
+    data = await groqRes.json();
+  } catch (err) {
+    console.error('[GROQ] Failed to parse Groq response JSON:', err);
+    return res.status(502).json({ error: 'Invalid response from Groq API' });
+  }
+
+  if (!groqRes.ok) {
+    const errMsg = data?.error?.message || 'Unknown Groq error';
+    console.error('[GROQ] Groq returned error status', groqRes.status, '-', errMsg);
+    return res.status(groqRes.status).json({ error: errMsg });
+  }
+
+  const reply = data.choices?.[0]?.message?.content ?? '';
+  console.log('[ROUTE] /chat reply sent to', ip, '— length:', reply.length);
+
+  return res.status(200).json({ reply });
+});
+
+// -------------------------
+// Exports
+// -------------------------
+module.exports = router;
