@@ -5,7 +5,8 @@
 //
 // Mount in app.js:
 //   const chatRouter = require('./routes/chat');
-//   app.use('/chat', chatRouter);
+//   app.use('/', chatRouter);
+//   → exposes GET /chat and POST /chat
 //
 // Environment variable required:
 //   GROQ_API_KEY=<your Groq API key>
@@ -130,12 +131,21 @@ router.use((req, res, next) => {
 });
 
 // Handle preflight
-router.options('/', (req, res) => res.sendStatus(200));
+router.options('/chat', (req, res) => res.sendStatus(200));
+
+// -------------------------
+// GET /chat — health check / sanity ping
+// -------------------------
+router.get('/chat', (req, res) => {
+  const ip = getIpFromReq(req);
+  console.log('[ROUTE] GET /chat (ping) from', ip);
+  return res.status(200).json({ status: 'ok', agent: 'Ledger', model: GROQ_MODEL });
+});
 
 // -------------------------
 // POST /chat
 // -------------------------
-router.post('/', async (req, res) => {
+router.post('/chat', async (req, res) => {
   const ip = getIpFromReq(req);
   console.log('[ROUTE] POST /chat called by', ip);
 
