@@ -1,19 +1,12 @@
-// routes/chat.js
+// controllers/chat.js
 // Ledger AI chat endpoint for TrustLedgerLabs.
-// Proxies conversation messages to Groq (llama-3.1-8b-instant) with the
-// Ledger system prompt injected server-side.
+// Mounted in controllers/index.js as:
+//   router.use('/api', require('./chat'));
+// Exposes:
+//   GET  /api/chat  — health check
+//   POST /api/chat  — chat with Ledger AI
 //
-// Mount in app.js:
-//   const chatRouter = require('./routes/chat');
-//   app.use('/', chatRouter);
-//   → exposes GET /chat and POST /chat
-//
-// Environment variable required:
-//   GROQ_API_KEY=<your Groq API key>
-//
-// POST /chat
-//   Body (JSON): { messages: [ { role: "user"|"assistant", content: "..." }, ... ] }
-//   Response:    { reply: "..." }
+// Requires env: GROQ_API_KEY
 
 const express = require('express');
 const router = express.Router();
@@ -121,33 +114,20 @@ function getIpFromReq(req) {
 }
 
 // -------------------------
-// CORS middleware
-// -------------------------
-router.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  next();
-});
-
-// Handle preflight
-router.options('/chat', (req, res) => res.sendStatus(200));
-
-// -------------------------
-// GET /chat — health check / sanity ping
+// GET /api/chat — health check / sanity ping
 // -------------------------
 router.get('/chat', (req, res) => {
   const ip = getIpFromReq(req);
-  console.log('[ROUTE] GET /chat (ping) from', ip);
+  console.log('[ROUTE] GET /api/chat (ping) from', ip);
   return res.status(200).json({ status: 'ok', agent: 'Ledger', model: GROQ_MODEL });
 });
 
 // -------------------------
-// POST /chat
+// POST /api/chat
 // -------------------------
 router.post('/chat', async (req, res) => {
   const ip = getIpFromReq(req);
-  console.log('[ROUTE] POST /chat called by', ip);
+  console.log('[ROUTE] POST /api/chat called by', ip);
 
   // --- validate env ---
   const apiKey = process.env.GROQ_API_KEY;
@@ -213,7 +193,7 @@ router.post('/chat', async (req, res) => {
   }
 
   const reply = data.choices?.[0]?.message?.content ?? '';
-  console.log('[ROUTE] /chat reply sent to', ip, '— length:', reply.length);
+  console.log('[ROUTE] /api/chat reply sent to', ip, '— length:', reply.length);
 
   return res.status(200).json({ reply });
 });
