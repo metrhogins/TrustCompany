@@ -17,7 +17,6 @@ import SubmitBlog from '@/pages/SubmitBlog'
 import Dashboard from '@/pages/Dashboard'
 import Schedule from '@/pages/Schedule'
 import Demo from '@/pages/Demo'
-import ChatWidget from '@/components/ChatWidget'
 import AuditLog from '@/pages/AuditLog'
 
 import Consulting from '@/pages/products/Consulting'
@@ -54,7 +53,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               </Routes>
             </main>
             <Footer />
-            <ChatWidget />
           </div>
         </BrowserRouter>
       </ToastProvider>
